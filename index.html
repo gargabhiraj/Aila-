@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -14,6 +13,8 @@
       --r: 22px;
     }
     *{ box-sizing:border-box; }
+
+    /* ✅ FIXED: allow scrolling + avoid cut-off */
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -21,10 +22,15 @@
         radial-gradient(900px 700px at 18% 18%, #ffd6e0 0%, transparent 60%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
       min-height:100vh;
-      display:flex; align-items:center; justify-content:center;
+
+      overflow:auto;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding: 16px 0;
       color:var(--ink);
-      overflow:hidden;
     }
+
     .wrap{ width:min(980px, 94vw); }
     .card{
       background:var(--card);
@@ -34,6 +40,10 @@
       position:relative;
       overflow:hidden;
       backdrop-filter: blur(7px);
+
+      /* ✅ FIXED: card scroll if too tall */
+      max-height: calc(100vh - 32px);
+      overflow:auto;
     }
 
     /* floating background */
@@ -48,6 +58,8 @@
       display:flex; flex-wrap:wrap; gap:10px;
       align-items:center; justify-content:space-between;
       margin-bottom:10px;
+      position:relative;
+      z-index:2;
     }
     .pill{
       font-size:12px; padding:6px 10px; border-radius:999px;
@@ -57,7 +69,7 @@
     }
     .pill strong{ font-weight:900; }
 
-    .grid{ display:grid; grid-template-columns: 1.25fr .75fr; gap:12px; }
+    .grid{ display:grid; grid-template-columns: 1.25fr .75fr; gap:12px; position:relative; z-index:2; }
     @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
 
     .pane{
@@ -69,7 +81,7 @@
 
     .bar{ height:10px; background:#00000010; border-radius:999px; overflow:hidden; }
     .fill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .35s ease; }
-    .hudRow{ display:flex; justify-content:space-between; gap:10px; margin-top:6px; font-size:13px; color:var(--muted); }
+    .hudRow{ display:flex; justify-content:space-between; gap:10px; margin-top:6px; font-size:13px; color:var(--muted); flex-wrap:wrap; }
 
     .typingRow{ display:flex; gap:8px; align-items:flex-start; margin-top:12px; }
     .typing{ margin:0; min-height:74px; white-space:pre-wrap; font-size:18px; line-height:1.35; flex:1; }
@@ -105,6 +117,44 @@
     .opt.good{ background: #19c37d16; border-color:#19c37d55; }
     .opt.bad{ background: #ff2d5516; border-color:#ff2d5555; }
 
+    /* ✅ FIXED: Memory grid stays horizontal */
+    #memGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 700px){
+      #memGrid{ grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 420px){
+      #memGrid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    .memTile{
+      height: 70px;
+      border-radius:14px;
+      border:1px solid #00000014;
+      background:#00000005;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .14s ease, filter .14s ease, background .14s ease;
+    }
+    .memTile:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .memTile.revealed{ background:#fff; }
+    .memTile.matched{
+      background: #19c37d16;
+      border-color:#19c37d55;
+      cursor:default;
+    }
+    .memTile.bad{
+      background: #ff2d5516;
+      border-color:#ff2d5555;
+    }
+
     /* boss fight */
     .bossBox{
       display:grid; gap:10px;
@@ -127,6 +177,9 @@
     .miniBar{ height:10px; background:#00000012; border-radius:999px; overflow:hidden; }
     .miniFill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .12s linear; }
     .bossStats{ display:flex; justify-content:space-between; gap:10px; font-size:13px; color:var(--muted); flex-wrap:wrap; }
+
+    /* slider */
+    input[type="range"]{ width:100%; accent-color: var(--accent); }
 
     /* final certificate */
     .cert{
@@ -239,7 +292,7 @@
               <span>Moves left: <b id="movesLeft">10</b></span>
               <span>Matches: <b id="matches">0</b>/6</span>
             </div>
-            <div class="opts" style="margin-top:10px;" id="memGrid"></div>
+            <div id="memGrid"></div>
           </div>
 
           <!-- BOSS -->
@@ -323,7 +376,7 @@
           <div class="sideTitle">What’s inside</div>
           <ul class="sideList">
             <li>Timed quiz</li>
-            <li>Memory match</li>
+            <li>Memory match (grid)</li>
             <li>Boss fight (tap frenzy)</li>
             <li>Yes-energy lock</li>
             <li>Final date picker</li>
@@ -334,11 +387,6 @@
             <b>Cheese</b><span>High 🧀</span>
             <b>Vibes</b><span>Immaculate ✨</span>
             <b>No button</b><span>Deleted ✅</span>
-          </div>
-
-          <div style="margin-top:12px; color:var(--muted); font-size:14px; line-height:1.45;">
-            If GitHub Pages shows an old version, do a hard refresh:
-            <b>Ctrl+F5</b> (Windows) / <b>Cmd+Shift+R</b> (Mac).
           </div>
         </div>
       </div>
@@ -474,7 +522,6 @@
       };
       $("stepText").textContent = map[step] || "—";
 
-      // progress 0..4 => 0..100
       const pct = step === 0 ? 0 : (step >= 5 ? 100 : Math.round((step/4)*100));
       $("progressFill").style.width = pct + "%";
     }
@@ -586,7 +633,7 @@
       renderQuiz();
     }
 
-    // ----- MEMORY (simple, reliable) -----
+    // ----- MEMORY (grid tiles) -----
     const memEmojis = ["💖","🍓","✨","🌹","💘","🎀"];
     let memDeck = [];
     let firstPick = null;
@@ -615,12 +662,7 @@
 
       memDeck.forEach((emoji)=>{
         const t = document.createElement("div");
-        t.className = "opt";            // reuse opt style to keep it simple
-        t.style.display = "flex";
-        t.style.alignItems = "center";
-        t.style.justifyContent = "center";
-        t.style.fontSize = "26px";
-        t.style.height = "62px";
+        t.className = "memTile";
         t.dataset.emoji = emoji;
         t.dataset.state = "hidden";
         t.textContent = "❓";
@@ -632,19 +674,21 @@
     function reveal(tile){
       tile.textContent = tile.dataset.emoji;
       tile.dataset.state = "revealed";
-      tile.classList.add("good");
+      tile.classList.add("revealed");
     }
     function hide(tile){
       tile.textContent = "❓";
       tile.dataset.state = "hidden";
-      tile.classList.remove("good");
+      tile.classList.remove("revealed");
       tile.classList.remove("bad");
     }
     function match(a,b){
       a.dataset.state = "matched";
       b.dataset.state = "matched";
-      a.classList.add("good");
-      b.classList.add("good");
+      a.classList.add("matched");
+      b.classList.add("matched");
+      a.classList.remove("revealed");
+      b.classList.remove("revealed");
       a.style.cursor = "default";
       b.style.cursor = "default";
     }
@@ -685,7 +729,8 @@
         }, 180);
       } else {
         lock = true;
-        a.classList.add("bad"); b.classList.add("bad");
+        a.classList.add("bad");
+        b.classList.add("bad");
         setTimeout(()=>{
           hide(a); hide(b);
           lock = false;
@@ -735,10 +780,7 @@
           clearInterval(timer);
           bossActive = false;
           $("timerText").textContent = "Timer: 0s";
-          if(bossTaps >= 20){
-            // already won
-            return;
-          }
+          if(bossTaps >= 20) return;
           failSound();
           toast("Boss won 😄 Try again!");
           achievement("Rematch 🔁", "The heart demands more taps.");
@@ -871,7 +913,7 @@ When are you free? 😄`;
       const hints = {
         0: "Hint: Press Start 😄",
         1: "Hint: The correct option usually screams ‘Yes energy’.",
-        2: "Hint: Try remembering two cards at a time (shocking).",
+        2: "Hint: Remember two cards at a time.",
         3: "Hint: Tap faster. No mercy. 💘",
         4: "Hint: 90%+. We’re watching 👀",
         5: "Hint: Pick a date option and send the message 😄"
@@ -918,4 +960,3 @@ When are you free? 😄`;
     typeLine("Loading Valentine Quest…\nAila, your mission starts when you press Start. 💘");
   </script>
 </body>
-</html>
