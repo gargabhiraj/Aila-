@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aila, urgent matter...</title>
+  <title>Aila — Valentine Quest</title>
   <style>
     :root{
-      --bg1:#ff758c;
-      --bg2:#ffb199;
+      --bg1:#ff4d6d;
+      --bg2:#ffb3c1;
       --card:#ffffffee;
-      --ink:#1d1d1f;
-      --accent:#ff3b6a;
-      --shadow: 0 18px 50px rgba(0,0,0,.22);
+      --ink:#141417;
+      --muted:#5c5c66;
+      --accent:#ff2d55;
+      --good:#19c37d;
+      --bad:#ff2d55;
+      --shadow: 0 18px 55px rgba(0,0,0,.22);
       --radius: 22px;
     }
     *{ box-sizing:border-box; }
@@ -19,7 +22,7 @@
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(1200px 800px at 20% 20%, #ffe4ea 0%, transparent 55%),
+        radial-gradient(1200px 900px at 18% 18%, #ffe6ec 0%, transparent 60%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
       min-height:100vh;
       display:flex;
@@ -28,26 +31,23 @@
       color:var(--ink);
       overflow:hidden;
     }
-    .wrap{ width:min(720px, 92vw); }
+    .wrap{ width:min(900px, 94vw); }
     .card{
       background:var(--card);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding: 26px 20px;
-      backdrop-filter: blur(6px);
+      padding: 18px;
       position:relative;
       overflow:hidden;
+      backdrop-filter: blur(7px);
     }
-    .float{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:.22;
-      filter: blur(.2px);
-    }
+
+    /* floating emojis */
+    .float{ position:absolute; inset:0; pointer-events:none; opacity:.2; }
     .float span{
       position:absolute;
       animation: drift linear infinite;
+      user-select:none;
       will-change: transform;
     }
     @keyframes drift{
@@ -55,11 +55,9 @@
       to  { transform: translateY(-20vh) rotate(360deg); }
     }
 
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+    .top{
+      display:flex; flex-wrap:wrap; gap:10px;
+      align-items:center; justify-content:space-between;
       margin-bottom:10px;
     }
     .pill{
@@ -70,60 +68,80 @@
       border:1px solid #00000014;
       user-select:none;
       white-space:nowrap;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+    .pill strong{ font-weight:900; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:12px;
+    }
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .pane{
+      background:#fff;
+      border:1px solid #00000012;
+      border-radius:18px;
+      padding:14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
     }
 
     .title{
-      font-size: 34px;
-      margin: 8px 0 6px;
-      letter-spacing: -0.02em;
+      font-size:32px;
+      margin: 2px 0 6px;
+      letter-spacing:-0.02em;
     }
     .subtitle{
-      font-size: 16px;
-      margin: 0 0 14px;
-      opacity:.85;
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.35;
     }
 
-    .typebox{
-      margin-top:14px;
-      background:#ffffff;
-      border:1px solid #00000012;
-      border-radius: 18px;
-      padding:16px 14px;
-      box-shadow: 0 8px 22px rgba(0,0,0,.07);
+    .bar{
+      height:10px;
+      background:#00000010;
+      border-radius:999px;
+      overflow:hidden;
     }
-    .typingRow{
-      display:flex;
-      align-items:flex-start;
-      gap:6px;
+    .fill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, #ff2d55, #8b5cf6);
+      border-radius:999px;
+      transition: width .35s ease;
     }
+    .hudRow{
+      display:flex; justify-content:space-between; gap:10px;
+      margin-top:6px; font-size:13px; color:var(--muted);
+    }
+
+    .typingRow{ display:flex; gap:8px; align-items:flex-start; margin-top:12px; }
     .typing{
-      font-size: 19px;
-      line-height: 1.35;
       margin:0;
-      min-height: 54px;
+      min-height: 70px;
       white-space: pre-wrap;
+      font-size:18px;
+      line-height:1.35;
       flex:1;
     }
     .caret{
-      width: 10px;
-      border-left: 2px solid #111;
-      height: 1em;
+      width:10px; height:1em;
+      border-left:2px solid #111;
       transform: translateY(4px);
       animation: blink .9s infinite;
-      flex:0 0 auto;
     }
-    @keyframes blink { 50% { opacity:0; } }
+    @keyframes blink{ 50%{ opacity:0; } }
 
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:14px;
-      align-items:center;
-    }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
     button{
-      font-size:18px;
-      padding:12px 16px;
+      font-size:16px;
+      padding: 11px 14px;
       border:0;
       border-radius: 16px;
       cursor:pointer;
@@ -131,86 +149,95 @@
       user-select:none;
     }
     button:active{ transform: scale(.98); }
-    .primary{
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 12px 26px rgba(255,59,106,.25);
-    }
+    .primary{ background: var(--accent); color:#fff; box-shadow: 0 12px 26px rgba(255,45,85,.22); }
     .primary:hover{ filter: brightness(1.03); transform: translateY(-1px); }
-    .ghost{
-      background:#00000008;
-      border:1px solid #00000014;
-      color:#222;
-    }
+    .ghost{ background:#00000008; border:1px solid #00000014; color:#222; }
     .ghost:hover{ filter: brightness(1.03); transform: translateY(-1px); }
+    .danger{ background:#111; color:#fff; }
 
-    .progress{
-      margin-left:auto;
-      font-size:13px;
-      opacity:.8;
-    }
-
-    .scan{
-      display:none;
-      margin-top: 14px;
-      background:#0b0b10;
-      color:#d6d6ff;
-      border-radius: 18px;
-      padding: 14px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 14px;
-      border:1px solid #ffffff1a;
-      box-shadow: 0 10px 26px rgba(0,0,0,.2);
-    }
-    .scan.show{ display:block; }
-    .bar{
-      height: 10px;
-      background: #ffffff14;
-      border-radius: 999px;
-      overflow:hidden;
-      margin-top:10px;
-    }
-    .fill{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, #8b5cf6, #ff3b6a);
-      border-radius: 999px;
-      transition: width .25s ease;
-    }
-
-    .panel{
-      margin-top: 14px;
-      background:#ffffff;
-      border:1px solid #00000012;
-      border-radius: 18px;
-      padding:14px;
-      display:none;
-      box-shadow: 0 8px 22px rgba(0,0,0,.07);
-    }
+    .panel{ display:none; margin-top:12px; }
     .panel.show{ display:block; }
-    .q{
-      font-size:16px;
-      margin:0 0 10px;
-      font-weight:700;
-    }
+
+    .q{ font-weight:900; margin:0 0 8px; }
     .opts{ display:grid; gap:8px; }
     .opt{
-      padding:12px 12px;
+      padding:12px;
       border-radius:14px;
       border:1px solid #00000014;
       background:#00000005;
       cursor:pointer;
       transition: transform .14s ease, filter .14s ease, background .14s ease;
-      font-size:16px;
+      font-size:15px;
     }
     .opt:hover{ transform: translateY(-1px); filter: brightness(1.03); }
-    .opt.correct{
-      background:#19c37d1a;
-      border-color:#19c37d55;
+    .opt.good{ background: #19c37d16; border-color:#19c37d55; }
+    .opt.bad{ background: #ff2d5516; border-color:#ff2d5555; }
+
+    /* memory */
+    .memInfo{ color:var(--muted); font-size:14px; }
+    .memGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-top:10px;
     }
-    .opt.wrong{
-      background:#ff3b6a1a;
-      border-color:#ff3b6a55;
+    @media (max-width: 520px){
+      .memGrid{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .tile{
+      aspect-ratio: 1/1;
+      border-radius:16px;
+      border:1px solid #00000014;
+      background:#00000006;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .14s ease, filter .14s ease, background .14s ease;
+    }
+    .tile:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .tile.revealed{ background:#fff; }
+    .tile.matched{ background:#19c37d16; border-color:#19c37d55; cursor:default; }
+
+    /* slider */
+    input[type="range"]{ width:100%; accent-color: var(--accent); }
+
+    /* final report */
+    .stamp{
+      display:inline-block;
+      padding:6px 10px;
+      border:2px dashed var(--good);
+      border-radius: 14px;
+      color:#0f6b45;
+      font-weight:900;
+      transform: rotate(-6deg);
+      background:#19c37d14;
+      width: fit-content;
+      margin-top:10px;
+    }
+    .meter{
+      background:#00000008;
+      border:1px solid #00000012;
+      border-radius:14px;
+      padding:10px 12px;
+      display:grid;
+      gap:6px;
+      margin-top:10px;
+    }
+    .mbar{
+      height: 10px;
+      background:#00000012;
+      border-radius: 999px;
+      overflow:hidden;
+    }
+    .mfill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, #ff2d55, #8b5cf6);
+      border-radius: 999px;
+      transition: width .6s ease;
     }
 
     .toast{
@@ -229,48 +256,19 @@
       transition: opacity .2s ease, transform .2s ease;
       z-index: 99999;
     }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-4px);
-    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-4px); }
 
-    .report{
+    .sideTitle{ font-weight:900; margin:0 0 8px; }
+    .sideList{ margin:0; padding-left:16px; color:var(--muted); font-size:14px; line-height:1.45; }
+    .kv{
       display:grid;
-      gap:10px;
+      grid-template-columns: 1fr auto;
+      gap:6px 10px;
       margin-top:10px;
+      font-size:14px;
+      color:var(--muted);
     }
-    .stamp{
-      display:inline-block;
-      padding:6px 10px;
-      border:2px dashed #19c37d;
-      border-radius: 14px;
-      color:#0f6b45;
-      font-weight:800;
-      transform: rotate(-6deg);
-      background:#19c37d14;
-      width: fit-content;
-    }
-    .meter{
-      background:#00000008;
-      border:1px solid #00000012;
-      border-radius: 14px;
-      padding:10px 12px;
-      display:grid;
-      gap:6px;
-    }
-    .mbar{
-      height: 10px;
-      background:#00000012;
-      border-radius: 999px;
-      overflow:hidden;
-    }
-    .mfill{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, #ff3b6a, #8b5cf6);
-      border-radius: 999px;
-      transition: width .6s ease;
-    }
+    .kv b{ color:#222; }
   </style>
 </head>
 
@@ -279,151 +277,186 @@
     <div class="card">
       <div class="float" id="float"></div>
 
-      <div class="topbar">
-        <div class="pill">📞 Official Valentine Hotline</div>
-        <div class="pill" id="statusPill">Status: pending approval</div>
+      <div class="top">
+        <div class="pill">🎮 Valentine Quest</div>
+        <div class="pill">Player: <strong>Aila</strong></div>
+        <div class="pill">Level: <strong id="lvl">1</strong></div>
+        <div class="pill">XP: <strong id="xp">0</strong></div>
+        <div class="pill">Streak: <strong id="streak">0</strong> 🔥</div>
       </div>
 
-      <h1 class="title">Aila 😌</h1>
-      <p class="subtitle">Please do not panic. This is a friendly audit of your Valentine availability.</p>
+      <div class="grid">
+        <div class="pane">
+          <div class="title">Aila 💖</div>
+          <p class="subtitle">
+            Complete the mini-games to unlock the official Valentine certificate.
+            (No “No” button. Only vibes.)
+          </p>
 
-      <div class="typebox">
-        <div class="typingRow">
-          <p class="typing" id="typing"></p>
-          <span class="caret" aria-hidden="true"></span>
+          <div class="bar"><div class="fill" id="progressFill"></div></div>
+          <div class="hudRow">
+            <span id="stepText">Step 1 / 4</span>
+            <span id="timerText">Timer: —</span>
+          </div>
+
+          <div class="typingRow">
+            <p class="typing" id="typing"></p><span class="caret" aria-hidden="true"></span>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="btnStart">Start Quest 🚀</button>
+            <button class="ghost" id="btnHint">Hint</button>
+            <button class="ghost" id="btnSound">Sound: Off</button>
+            <button class="danger" id="btnReset">Reset</button>
+          </div>
+
+          <!-- QUIZ -->
+          <div class="panel" id="pQuiz">
+            <p class="q" id="qText">Question</p>
+            <div class="opts" id="opts"></div>
+          </div>
+
+          <!-- MEMORY -->
+          <div class="panel" id="pMemory">
+            <p class="q">Mini-game: Memory Match 🧠</p>
+            <div class="memInfo">Moves left: <b id="movesLeft">10</b></div>
+            <div class="memGrid" id="memGrid"></div>
+          </div>
+
+          <!-- SLIDER -->
+          <div class="panel" id="pSlider">
+            <p class="q">Final lock: “Yes Energy” Calibration 🔒</p>
+            <div class="memInfo">Slide to <b>90%</b> or above to unlock.</div>
+            <div style="margin-top:10px;">
+              <input id="yesSlider" type="range" min="0" max="100" value="8" />
+              <div class="hudRow"><span>meh</span><span>YES</span></div>
+            </div>
+            <div class="actions" style="margin-top:10px;">
+              <button class="primary" id="btnUnlock" disabled>Unlock ✅</button>
+            </div>
+          </div>
+
+          <!-- FINAL -->
+          <div class="panel" id="pFinal">
+            <p class="q">✅ Certificate Unlocked</p>
+            <div style="font-size:18px; line-height:1.45;">
+              Congratulations. You are now officially my Valentine. 💘<br><br>
+              Rewards:
+              <ul style="margin:10px 0 0; padding-left:18px;">
+                <li>Dinner 🍝 (required)</li>
+                <li>Dessert 🍰 (non-negotiable)</li>
+                <li>Unreasonably cute photos 📸</li>
+              </ul>
+            </div>
+
+            <div class="stamp">✅ MATCH FOUND: AILA + YOU</div>
+
+            <div class="meter">
+              <div><b>Yes Energy</b>: <span id="mYes">loading…</span></div>
+              <div class="mbar"><div class="mfill" id="bYes"></div></div>
+            </div>
+            <div class="meter">
+              <div><b>Laugh Compatibility</b>: <span id="mLaugh">loading…</span></div>
+              <div class="mbar"><div class="mfill" id="bLaugh"></div></div>
+            </div>
+            <div class="meter">
+              <div><b>Dessert Agreement</b>: <span id="mDessert">loading…</span></div>
+              <div class="mbar"><div class="mfill" id="bDessert"></div></div>
+            </div>
+            <div class="meter">
+              <div><b>Probability of Cute Date</b>: <span id="mCute">loading…</span></div>
+              <div class="mbar"><div class="mfill" id="bCute"></div></div>
+            </div>
+
+            <div class="actions" style="margin-top:12px;">
+              <button class="primary" id="btnHearts">Confirm (hearts) 💖</button>
+              <button class="ghost" id="btnCopy">Copy message</button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="actions">
-        <button class="primary" id="btnProceed">Proceed (very serious)</button>
-        <button class="ghost" id="btnSkip">Skip to “obviously yes”</button>
-        <div class="progress" id="progress">Step 1 / 4</div>
-      </div>
-
-      <div class="scan" id="scan">
-        <div id="scanText">Initializing romance protocol…</div>
-        <div class="bar"><div class="fill" id="fill"></div></div>
-      </div>
-
-      <div class="panel" id="quiz">
-        <div class="q" id="qText">Question</div>
-        <div class="opts" id="opts"></div>
-      </div>
-
-      <div class="panel" id="final">
-        <div class="q">✅ Result: You passed (with distinction)</div>
-        <div style="font-size:18px; line-height:1.4;">
-          Therefore, by the ancient laws of romance, you are now officially my Valentine. 💖<br><br>
-          Next steps:
-          <ul style="margin:10px 0 0; padding-left:18px;">
-            <li>Dinner 🍝 (required)</li>
-            <li>Dessert 🍰 (non-negotiable)</li>
-            <li>Unreasonably cute photos 📸</li>
+        <div class="pane">
+          <div class="sideTitle">Quest Checklist</div>
+          <ul class="sideList">
+            <li>Timed quiz (3 questions)</li>
+            <li>Memory match (pairs)</li>
+            <li>Yes-energy slider lock</li>
+            <li>Final certificate + stats</li>
           </ul>
-        </div>
 
-        <div class="report" id="report">
-          <div class="stamp">✅ MATCH FOUND: AILA + YOU</div>
-
-          <div class="meter">
-            <div><strong>Yes Energy</strong>: <span id="yesEnergy">loading…</span></div>
-            <div class="mbar"><div class="mfill" id="m1"></div></div>
+          <div class="kv">
+            <b>Goal</b><span>Unlock certificate</span>
+            <b>Cheese</b><span>High 🧀</span>
+            <b>Vibes</b><span>Immaculate ✨</span>
+            <b>No button</b><span>Deleted ✅</span>
           </div>
 
-          <div class="meter">
-            <div><strong>Laugh Compatibility</strong>: <span id="laughComp">loading…</span></div>
-            <div class="mbar"><div class="mfill" id="m2"></div></div>
+          <div style="margin-top:12px; color:var(--muted); font-size:14px; line-height:1.45;">
+            Send the link with: <b>“I made you a game.”</b>  
+            Works unfairly well.
           </div>
-
-          <div class="meter">
-            <div><strong>Dessert Agreement</strong>: <span id="dessertAgree">loading…</span></div>
-            <div class="mbar"><div class="mfill" id="m3"></div></div>
-          </div>
-
-          <div class="meter">
-            <div><strong>Probability of Cute Date</strong>: <span id="cuteProb">loading…</span></div>
-            <div class="mbar"><div class="mfill" id="m4"></div></div>
-          </div>
-
-          <div style="font-size:14px; opacity:.75;">
-            *Report generated by ValentineGPT v1.0 (very real, definitely certified).*
-          </div>
-        </div>
-
-        <div class="actions" style="margin-top:12px;">
-          <button class="primary" id="btnConfetti">Confirm (send hearts)</button>
-          <button class="ghost" id="btnCopy">Copy a message to send</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="toast" id="toast">Copied ✅</div>
+  <div class="toast" id="toast">OK</div>
 
   <script>
-    // Floating hearts background
-    (function makeFloat(){
-      const f = document.getElementById("float");
-      const emojis = ["💖","💗","💘","💞","🌹","✨"];
-      for(let i=0;i<18;i++){
-        const s = document.createElement("span");
-        s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-        s.style.left = (Math.random()*100) + "%";
-        s.style.animationDuration = (10 + Math.random()*12) + "s";
-        s.style.animationDelay = (-Math.random()*20) + "s";
-        s.style.fontSize = (18 + Math.random()*20) + "px";
-        f.appendChild(s);
-      }
-    })();
-
-    // Elements
-    const typingEl   = document.getElementById("typing");
-    const statusPill = document.getElementById("statusPill");
-    const progressEl = document.getElementById("progress");
-    const scan       = document.getElementById("scan");
-    const scanText   = document.getElementById("scanText");
-    const fill       = document.getElementById("fill");
-    const quizPanel  = document.getElementById("quiz");
-    const qText      = document.getElementById("qText");
-    const opts       = document.getElementById("opts");
-    const finalPanel = document.getElementById("final");
-    const toastEl    = document.getElementById("toast");
-
-    // Typewriter script
-    const scriptLines = [
-      "Hello Aila.\nThis is an automated message from the Valentine Department.",
-      "We have detected an unusually high level of cuteness in your vicinity.",
-      "To continue, please complete the Mandatory Valentine Verification™.",
-      "Warning: selecting 'yes' may lead to dinner, dessert, and smiling a lot."
-    ];
-
-    function typeLine(text, cb){
-      typingEl.textContent = "";
-      let i = 0;
-      const speed = 18 + Math.random()*10;
-      const t = setInterval(() => {
-        typingEl.textContent += text[i] ?? "";
-        i++;
-        if(i > text.length){
-          clearInterval(t);
-          if(cb) cb();
-        }
-      }, speed);
-    }
-
-    // Toast
+    // Helpers
+    const $ = (id)=>document.getElementById(id);
+    const toastEl = $("toast");
     let toastTimer;
     function toast(msg){
       toastEl.textContent = msg;
       toastEl.classList.add("show");
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1100);
+      toastTimer = setTimeout(()=>toastEl.classList.remove("show"), 1100);
     }
+    function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+    // Floating emojis
+    (function makeFloat(){
+      const f = $("float");
+      const emojis = ["💖","💗","💘","💞","🌹","✨","🍓"];
+      for(let i=0;i<20;i++){
+        const s=document.createElement("span");
+        s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        s.style.left = (Math.random()*100) + "%";
+        s.style.animationDuration = (10 + Math.random()*14) + "s";
+        s.style.animationDelay = (-Math.random()*18) + "s";
+        s.style.fontSize = (18 + Math.random()*22) + "px";
+        f.appendChild(s);
+      }
+    })();
+
+    // Optional sound
+    let soundOn = false;
+    let audioCtx = null;
+    function beep(freq=660, ms=70, type="sine"){
+      if(!soundOn) return;
+      try{
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = type;
+        o.frequency.value = freq;
+        g.gain.value = 0.04;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        setTimeout(()=>o.stop(), ms);
+      } catch(e){}
+    }
+    function successSound(){
+      beep(784, 80, "triangle");
+      setTimeout(()=>beep(988, 90, "triangle"), 90);
+    }
+    function failSound(){ beep(220, 120, "sawtooth"); }
 
     // Confetti hearts
     function heartsBurst(n=22){
       for(let i=0;i<n;i++){
-        const s = document.createElement("span");
+        const s=document.createElement("span");
         s.textContent = ["💖","💗","💘","💞","✨"][Math.floor(Math.random()*5)];
         s.style.position="fixed";
         s.style.left=(Math.random()*100)+"vw";
@@ -440,172 +473,235 @@
       }
     }
 
-    // Fake scan
-    function runScan(cb){
-      scan.classList.add("show");
-      const steps = [
-        ["Checking calendar…", 22],
-        ["Checking snack preferences…", 48],
-        ["Checking tolerance for cheesy jokes…", 71],
-        ["Searching for other options…", 88],
-        ["Other options found: 0 ✅", 100]
-      ];
-      let k = 0;
-      fill.style.width = "0%";
-      const timer = setInterval(()=>{
-        scanText.textContent = steps[k][0];
-        fill.style.width = steps[k][1] + "%";
-        k++;
-        if(k >= steps.length){
-          clearInterval(timer);
-          setTimeout(()=> cb && cb(), 450);
+    // Typewriter
+    const typingEl = $("typing");
+    let typingTimer = null;
+    function typeLine(text, cb){
+      clearInterval(typingTimer);
+      typingEl.textContent = "";
+      let i=0;
+      const speed = 16 + Math.random()*10;
+      typingTimer = setInterval(()=>{
+        typingEl.textContent += text[i] ?? "";
+        i++;
+        if(i > text.length){
+          clearInterval(typingTimer);
+          cb && cb();
         }
-      }, 650);
+      }, speed);
+    }
+
+    // HUD state
+    let step = 0; // 0=not started, 1=quiz, 2=memory, 3=slider, 4=final
+    let xp = 0, lvl = 1, streak = 0;
+
+    function setHUD(){
+      $("xp").textContent = xp;
+      $("lvl").textContent = lvl;
+      $("streak").textContent = streak;
+      $("stepText").textContent = `Step ${Math.min(Math.max(step,1),4)} / 4`;
+      $("progressFill").style.width = ((Math.min(step,4)-1)/3)*100 + "%";
+    }
+    function addXP(n){
+      xp += n;
+      const newLvl = 1 + Math.floor(xp / 120);
+      if(newLvl > lvl){
+        lvl = newLvl;
+        toast(`Level up! 🎉 (Level ${lvl})`);
+        heartsBurst(10);
+        successSound();
+      }
+      setHUD();
+    }
+    function bumpStreak(ok){
+      streak = ok ? streak+1 : 0;
+      setHUD();
+    }
+
+    function showPanel(id){
+      ["pQuiz","pMemory","pSlider","pFinal"].forEach(pid => $(pid).classList.remove("show"));
+      if(id) $(id).classList.add("show");
+    }
+
+    // Timer
+    let timer = null;
+    let timeLeft = 0;
+    function stopTimer(){
+      clearInterval(timer);
+      $("timerText").textContent = "Timer: —";
+    }
+    function startTimer(seconds, onFail){
+      clearInterval(timer);
+      timeLeft = seconds;
+      $("timerText").textContent = `Timer: ${timeLeft}s`;
+      timer = setInterval(()=>{
+        timeLeft--;
+        $("timerText").textContent = `Timer: ${timeLeft}s`;
+        if(timeLeft <= 0){
+          clearInterval(timer);
+          $("timerText").textContent = "Timer: 0s";
+          onFail && onFail();
+        }
+      }, 1000);
     }
 
     // Quiz
     const quiz = [
-      { q: "1) Choose the correct answer:", a: 0, o: ["Yes, obviously 💖", "Maybe?", "I need to consult my lawyer"] },
-      { q: "2) Pick your Valentine difficulty level:", a: 1, o: ["Hard mode (awkward eye contact)", "Easy mode (cute date + laughs)", "Expert mode (I bring flowers AND puns)"] },
-      { q: "3) Final confirmation:", a: 2, o: ["I accept but only for dessert", "I accept but only for dinner", "I accept (and also dessert) 🍰"] }
+      { q: "1) Choose the correct response:", a: 0, o: ["Yes, obviously 💖", "Maybe", "I need to consult my lawyer"] },
+      { q: "2) Pick a date difficulty:", a: 1, o: ["Hard mode (awkward eye contact)", "Easy mode (cute date + laughs)", "Expert mode (flowers + puns)"] },
+      { q: "3) Select the best reward:", a: 2, o: ["Only dinner", "Only dessert", "Dinner + dessert 🍰"] }
     ];
     let qIdx = 0;
 
-    function showQuizQuestion(){
-      quizPanel.classList.add("show");
-      finalPanel.classList.remove("show");
+    function renderQuiz(){
+      showPanel("pQuiz");
+      const q = quiz[qIdx];
+      $("qText").textContent = q.q;
+      const opts = $("opts");
       opts.innerHTML = "";
 
-      const item = quiz[qIdx];
-      qText.textContent = item.q;
-
-      item.o.forEach((label, i) => {
+      q.o.forEach((label, i)=>{
         const b = document.createElement("div");
         b.className = "opt";
         b.textContent = label;
-        b.onclick = () => {
-          if(i === item.a){
-            b.classList.add("correct");
+        b.onclick = ()=>{
+          if(i === q.a){
+            b.classList.add("good");
+            stopTimer();
+            bumpStreak(true);
+            addXP(35 + Math.min(streak,5)*5);
             toast("Correct ✅");
-            setTimeout(() => {
+            successSound();
+            setTimeout(()=>{
               qIdx++;
               if(qIdx >= quiz.length){
-                quizPanel.classList.remove("show");
-                finalPanel.classList.add("show");
-                statusPill.textContent = "Status: approved ✅";
-                progressEl.textContent = "Step 4 / 4";
-                heartsBurst(28);
-                animateReport();
+                nextStep(); // go to memory
               } else {
-                showQuizQuestion();
+                renderQuiz();
               }
             }, 420);
           } else {
-            b.classList.add("wrong");
-            toast("Nice try 😄 (pick the correct one)");
-            setTimeout(()=> b.classList.remove("wrong"), 650);
+            b.classList.add("bad");
+            bumpStreak(false);
+            addXP(5);
+            toast("Nice try 😄");
+            failSound();
+            setTimeout(()=> b.classList.remove("bad"), 650);
           }
         };
         opts.appendChild(b);
       });
-    }
 
-    // Report meters
-    function rand(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-    function animateBar(barId, labelId, min, max, delay){
-      setTimeout(() => {
-        const v = rand(min, max);
-        document.getElementById(labelId).textContent = v + "%";
-        requestAnimationFrame(() => {
-          document.getElementById(barId).style.width = v + "%";
-        });
-      }, delay);
-    }
-
-    function animateReport(){
-      animateBar("m1","yesEnergy", 94, 100, 200);
-      animateBar("m2","laughComp", 88, 99, 420);
-      animateBar("m3","dessertAgree", 97, 100, 640);
-      animateBar("m4","cuteProb", 92, 100, 860);
-      setTimeout(() => toast("✅ Match certified"), 1050);
-    }
-
-    // Flow buttons
-    const btnProceed = document.getElementById("btnProceed");
-    const btnSkip    = document.getElementById("btnSkip");
-
-    let lineIdx = 0;
-
-    function start(){
-      progressEl.textContent = "Step 1 / 4";
-      statusPill.textContent = "Status: assessing vibes";
-      typeLine(scriptLines[0]);
-    }
-    start();
-
-    btnProceed.onclick = () => {
-      lineIdx++;
-      if(lineIdx === 1){
-        progressEl.textContent = "Step 2 / 4";
-        statusPill.textContent = "Status: verifying cuteness";
-        typeLine(scriptLines[1]);
-      } else if(lineIdx === 2){
-        progressEl.textContent = "Step 3 / 4";
-        statusPill.textContent = "Status: running checks";
-        typeLine(scriptLines[2], () => {
-          runScan(() => {
-            scanText.textContent = "Scan complete ✅";
-            setTimeout(showQuizQuestion, 250);
-          });
-        });
-      } else {
-        typeLine(scriptLines[3]);
-        heartsBurst(16);
-      }
-    };
-
-    btnSkip.onclick = () => {
-      progressEl.textContent = "Fast track engaged ⚡";
-      statusPill.textContent = "Status: skipping to approval";
-      runScan(() => {
-        qIdx = 0;
-        showQuizQuestion();
+      startTimer(12, ()=>{
+        bumpStreak(false);
+        failSound();
+        toast("Time! 😄 Streak reset.");
+        renderQuiz();
       });
-    };
+    }
 
-    // Final actions
-    document.getElementById("btnConfetti").onclick = () => {
-      heartsBurst(40);
-      toast("Valentine confirmed 💖");
-    };
+    // Memory game
+    const memEmojis = ["💖","🍓","✨","🌹","💘","🎀"]; // 6 pairs = 12 tiles
+    let memDeck = [];
+    let firstPick = null;
+    let lock = false;
+    let matched = 0;
+    let movesLeft = 10;
 
-    document.getElementById("btnCopy").onclick = async () => {
-      const msg =
-`Aila 💖
-
-Urgent update from the Valentine Department:
-You have been officially selected as my Valentine.
-
-Next steps:
-🍝 Dinner
-🍰 Dessert
-✨ Being ridiculously cute together
-
-So… what day are you free? 😄`;
-      try{
-        await navigator.clipboard.writeText(msg);
-        toast("Copied ✅");
-      } catch(e){
-        // fallback for older browsers
-        const t = document.createElement("textarea");
-        t.value = msg;
-        document.body.appendChild(t);
-        t.select();
-        document.execCommand("copy");
-        t.remove();
-        toast("Copied ✅");
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]] = [arr[j],arr[i]];
       }
-    };
-  </script>
-</body>
-</html>
+      return arr;
+    }
+
+    function setupMemory(){
+      showPanel("pMemory");
+      stopTimer();
+
+      matched = 0;
+      firstPick = null;
+      lock = false;
+      movesLeft = 10;
+      $("movesLeft").textContent = movesLeft;
+
+      memDeck = shuffle([...memEmojis, ...memEmojis]);
+      const grid = $("memGrid");
+      grid.innerHTML = "";
+
+      memDeck.forEach((emoji)=>{
+        const t = document.createElement("div");
+        t.className = "tile";
+        t.dataset.emoji = emoji;
+        t.dataset.state = "hidden";
+        t.textContent = "❓";
+        t.onclick = ()=> onTileClick(t);
+        grid.appendChild(t);
+      });
+    }
+
+    function reveal(tile){
+      tile.classList.add("revealed");
+      tile.textContent = tile.dataset.emoji;
+      tile.dataset.state = "revealed";
+    }
+    function hide(tile){
+      tile.classList.remove("revealed");
+      tile.textContent = "❓";
+      tile.dataset.state = "hidden";
+    }
+    function markMatched(a,b){
+      a.classList.remove("revealed");
+      b.classList.remove("revealed");
+      a.classList.add("matched");
+      b.classList.add("matched");
+      a.dataset.state = "matched";
+      b.dataset.state = "matched";
+    }
+
+    function onTileClick(tile){
+      if(lock) return;
+      if(tile.dataset.state !== "hidden") return;
+
+      reveal(tile);
+      beep(660, 45, "sine");
+
+      if(!firstPick){
+        firstPick = tile;
+        return;
+      }
+
+      // second pick
+      movesLeft--;
+      $("movesLeft").textContent = movesLeft;
+
+      const a = firstPick;
+      const b = tile;
+      firstPick = null;
+
+      if(a.dataset.emoji === b.dataset.emoji){
+        lock = true;
+        setTimeout(()=>{
+          markMatched(a,b);
+          matched++;
+          lock = false;
+          bumpStreak(true);
+          addXP(25 + Math.min(streak,6)*4);
+          toast("Match ✅");
+          successSound();
+          if(matched === memEmojis.length){
+            heartsBurst(18);
+            nextStep(); // go to slider
+          }
+        }, 220);
+      } else {
+        lock = true;
+        setTimeout(()=>{
+          hide(a); hide(b);
+          lock = false;
+          bumpStreak(false);
+          addXP(4);
+          failSound();
+          toast("Nope 😄");
+          if(m
