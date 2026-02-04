@@ -6,9 +6,16 @@
   <title>Aila — Valentine Quest</title>
   <style>
     :root{
-      --bg1:#ff4d6d; --bg2:#ffb3c1; --card:#ffffffee;
-      --ink:#141417; --muted:#5c5c66; --accent:#ff2d55;
-      --good:#19c37d; --shadow: 0 18px 55px rgba(0,0,0,.22);
+      --bg1:#ff2d55;
+      --bg2:#ffb3c1;
+      --bg3:#ffd6e0;
+      --card:#ffffffee;
+      --ink:#141417;
+      --muted:#5c5c66;
+      --accent:#ff2d55;
+      --good:#19c37d;
+      --warn:#ff9500;
+      --shadow: 0 18px 55px rgba(0,0,0,.22);
       --radius: 22px;
     }
     *{ box-sizing:border-box; }
@@ -16,14 +23,17 @@
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(1200px 900px at 18% 18%, #ffe6ec 0%, transparent 60%),
+        radial-gradient(900px 700px at 18% 18%, var(--bg3) 0%, transparent 60%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
       min-height:100vh;
-      display:flex; align-items:center; justify-content:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       color:var(--ink);
       overflow:hidden;
     }
-    .wrap{ width:min(900px, 94vw); }
+    .wrap{ width:min(980px, 94vw); }
+
     .card{
       background:var(--card);
       border-radius:var(--radius);
@@ -33,41 +43,130 @@
       overflow:hidden;
       backdrop-filter: blur(7px);
     }
-    .float{ position:absolute; inset:0; pointer-events:none; opacity:.2; }
-    .float span{ position:absolute; animation: drift linear infinite; user-select:none; will-change:transform; }
-    @keyframes drift{ from{transform:translateY(110vh) rotate(0deg);} to{transform:translateY(-20vh) rotate(360deg);} }
 
-    .top{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    /* Preloader overlay */
+    .overlay{
+      position:absolute; inset:0;
+      background: linear-gradient(135deg, rgba(255,45,85,.88), rgba(255,179,193,.88));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .overlay.hide{
+      opacity:0;
+      transform: scale(1.02);
+      pointer-events:none;
+    }
+    .loaderCard{
+      width:min(520px, 92vw);
+      background:#ffffffee;
+      border-radius:22px;
+      border:1px solid #00000012;
+      box-shadow: 0 18px 55px rgba(0,0,0,.25);
+      padding:18px;
+      text-align:center;
+    }
+    .loaderTitle{ font-size:22px; font-weight:900; margin:4px 0 10px; }
+    .loaderText{ color:var(--muted); margin:0 0 12px; font-size:14px; }
+    .loadBar{ height:10px; background:#00000010; border-radius:999px; overflow:hidden; }
+    .loadFill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .25s ease; }
+
+    /* Floating emojis */
+    .float{ position:absolute; inset:0; pointer-events:none; opacity:.18; }
+    .float span{
+      position:absolute;
+      animation: drift linear infinite;
+      user-select:none;
+      will-change: transform;
+    }
+    @keyframes drift{
+      from{ transform: translateY(110vh) rotate(0deg); }
+      to  { transform: translateY(-20vh) rotate(360deg); }
+    }
+
+    .top{
+      display:flex; flex-wrap:wrap; gap:10px;
+      align-items:center; justify-content:space-between;
+      margin-bottom:10px;
+    }
     .pill{
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      background:#0000000a; border:1px solid #00000014;
-      user-select:none; white-space:nowrap; display:inline-flex; gap:8px; align-items:center;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#0000000a;
+      border:1px solid #00000014;
+      user-select:none;
+      white-space:nowrap;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
     }
     .pill strong{ font-weight:900; }
 
-    .grid{ display:grid; grid-template-columns: 1.25fr .75fr; gap:12px; }
-    @media (max-width: 860px){ .grid{ grid-template-columns: 1fr; } }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:12px;
+    }
+    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
 
     .pane{
-      background:#fff; border:1px solid #00000012; border-radius:18px;
-      padding:14px; box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      background:#fff;
+      border:1px solid #00000012;
+      border-radius:18px;
+      padding:14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
     }
-    .title{ font-size:32px; margin: 2px 0 6px; letter-spacing:-0.02em; }
-    .subtitle{ margin:0 0 10px; color:var(--muted); font-size:15px; line-height:1.35; }
+    .title{
+      font-size:34px;
+      margin: 2px 0 6px;
+      letter-spacing:-0.02em;
+    }
+    .subtitle{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.35;
+    }
 
     .bar{ height:10px; background:#00000010; border-radius:999px; overflow:hidden; }
     .fill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .35s ease; }
-    .hudRow{ display:flex; justify-content:space-between; gap:10px; margin-top:6px; font-size:13px; color:var(--muted); }
+    .hudRow{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:6px;
+      font-size:13px;
+      color:var(--muted);
+    }
 
     .typingRow{ display:flex; gap:8px; align-items:flex-start; margin-top:12px; }
-    .typing{ margin:0; min-height:70px; white-space:pre-wrap; font-size:18px; line-height:1.35; flex:1; }
-    .caret{ width:10px; height:1em; border-left:2px solid #111; transform: translateY(4px); animation: blink .9s infinite; }
+    .typing{
+      margin:0;
+      min-height:74px;
+      white-space:pre-wrap;
+      font-size:18px;
+      line-height:1.35;
+      flex:1;
+    }
+    .caret{
+      width:10px; height:1em;
+      border-left:2px solid #111;
+      transform: translateY(4px);
+      animation: blink .9s infinite;
+    }
     @keyframes blink{ 50%{ opacity:0; } }
 
     .actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
     button{
-      font-size:16px; padding: 11px 14px; border:0; border-radius: 16px;
-      cursor:pointer; transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+      font-size:16px;
+      padding: 11px 14px;
+      border:0;
+      border-radius: 16px;
+      cursor:pointer;
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
       user-select:none;
     }
     button:active{ transform: scale(.98); }
@@ -76,6 +175,7 @@
     .ghost{ background:#00000008; border:1px solid #00000014; color:#222; }
     .ghost:hover{ filter: brightness(1.03); transform: translateY(-1px); }
     .danger{ background:#111; color:#fff; }
+    .ok{ background: #19c37d; color:#fff; }
 
     .panel{ display:none; margin-top:12px; }
     .panel.show{ display:block; }
@@ -83,48 +183,124 @@
     .q{ font-weight:900; margin:0 0 8px; }
     .opts{ display:grid; gap:8px; }
     .opt{
-      padding:12px; border-radius:14px; border:1px solid #00000014; background:#00000005;
-      cursor:pointer; transition: transform .14s ease, filter .14s ease;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid #00000014;
+      background:#00000005;
+      cursor:pointer;
+      transition: transform .14s ease, filter .14s ease;
       font-size:15px;
     }
     .opt:hover{ transform: translateY(-1px); filter: brightness(1.03); }
     .opt.good{ background: #19c37d16; border-color:#19c37d55; }
     .opt.bad{ background: #ff2d5516; border-color:#ff2d5555; }
 
-    .memInfo{ color:var(--muted); font-size:14px; }
+    /* memory */
+    .memInfo{ color:var(--muted); font-size:14px; display:flex; gap:14px; flex-wrap:wrap; }
     .memGrid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top:10px; }
     @media (max-width: 520px){ .memGrid{ grid-template-columns: repeat(3, 1fr); } }
     .tile{
-      aspect-ratio: 1/1; border-radius:16px; border:1px solid #00000014; background:#00000006;
-      display:flex; align-items:center; justify-content:center; font-size:28px; cursor:pointer;
-      user-select:none; transition: transform .14s ease, filter .14s ease, background .14s ease;
+      aspect-ratio: 1/1;
+      border-radius:16px;
+      border:1px solid #00000014;
+      background:#00000006;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .14s ease, filter .14s ease, background .14s ease;
+      position:relative;
     }
     .tile:hover{ transform: translateY(-1px); filter: brightness(1.03); }
     .tile.revealed{ background:#fff; }
     .tile.matched{ background:#19c37d16; border-color:#19c37d55; cursor:default; }
 
+    /* slider */
     input[type="range"]{ width:100%; accent-color: var(--accent); }
 
+    /* certificate */
+    .cert{
+      margin-top:12px;
+      background: linear-gradient(135deg, #fff, #fff7f9);
+      border:1px solid #00000012;
+      border-radius:18px;
+      padding:14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      position:relative;
+      overflow:hidden;
+    }
+    .cert h2{ margin:0 0 6px; font-size:20px; }
+    .cert p{ margin:0; color:var(--muted); }
     .stamp{
-      display:inline-block; padding:6px 10px; border:2px dashed var(--good);
-      border-radius: 14px; color:#0f6b45; font-weight:900; transform: rotate(-6deg);
-      background:#19c37d14; width: fit-content; margin-top:10px;
+      display:inline-block;
+      padding:8px 12px;
+      border:2px dashed var(--good);
+      border-radius: 14px;
+      color:#0f6b45;
+      font-weight:900;
+      transform: rotate(-6deg);
+      background:#19c37d14;
+      width: fit-content;
+      margin-top:10px;
+      animation: pop .6s ease both;
     }
-    .meter{
-      background:#00000008; border:1px solid #00000012; border-radius:14px;
-      padding:10px 12px; display:grid; gap:6px; margin-top:10px;
+    @keyframes pop{
+      from{ transform: translateY(8px) rotate(-10deg) scale(.9); opacity:.0; }
+      to{ transform: translateY(0) rotate(-6deg) scale(1); opacity:1; }
     }
-    .mbar{ height: 10px; background:#00000012; border-radius: 999px; overflow:hidden; }
-    .mfill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius: 999px; transition: width .6s ease; }
 
+    .meter{
+      background:#00000008;
+      border:1px solid #00000012;
+      border-radius:14px;
+      padding:10px 12px;
+      display:grid;
+      gap:6px;
+      margin-top:10px;
+    }
+    .mbar{ height:10px; background:#00000012; border-radius:999px; overflow:hidden; }
+    .mfill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .6s ease; }
+
+    /* achievement + toast */
     .toast{
-      position: fixed; left:50%; bottom: 18px; transform: translateX(-50%);
-      background: #111; color:#fff; padding: 10px 14px; border-radius: 999px;
+      position: fixed;
+      left:50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: #111;
+      color:#fff;
+      padding: 10px 14px;
+      border-radius: 999px;
       box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      font-size: 14px; opacity:0; pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease; z-index: 99999;
+      font-size: 14px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index: 99999;
     }
     .toast.show{ opacity:1; transform: translateX(-50%) translateY(-4px); }
+
+    .ach{
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      width: min(320px, 90vw);
+      background:#ffffff;
+      border:1px solid #00000012;
+      border-radius:18px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.18);
+      padding:12px;
+      transform: translateY(-10px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index: 99998;
+    }
+    .ach.show{ opacity:1; transform: translateY(0); }
+    .achTitle{ font-weight:900; margin:0 0 4px; }
+    .achText{ margin:0; color:var(--muted); font-size:14px; line-height:1.35; }
 
     .sideTitle{ font-weight:900; margin:0 0 8px; }
     .sideList{ margin:0; padding-left:16px; color:var(--muted); font-size:14px; line-height:1.45; }
@@ -135,7 +311,7 @@
 
 <body>
   <div class="wrap">
-    <div class="card">
+    <div class="card" id="app">
       <div class="float" id="float"></div>
 
       <div class="top">
@@ -147,11 +323,12 @@
       </div>
 
       <div class="grid">
+        <!-- MAIN -->
         <div class="pane">
           <div class="title">Aila 💖</div>
           <p class="subtitle">
-            Beat the mini-games to unlock the official Valentine certificate.
-            (No “No” button. Only vibes.)
+            Beat the mini-games to unlock the certificate.
+            (Made with dangerously high effort by <b>Abhiraj</b>.)
           </p>
 
           <div class="bar"><div class="fill" id="progressFill"></div></div>
@@ -180,14 +357,17 @@
           <!-- MEMORY -->
           <div class="panel" id="pMemory">
             <p class="q">Mini-game: Memory Match 🧠</p>
-            <div class="memInfo">Moves left: <b id="movesLeft">10</b></div>
+            <div class="memInfo">
+              <span>Moves left: <b id="movesLeft">10</b></span>
+              <span>Best streak: <b id="bestStreak">0</b></span>
+            </div>
             <div class="memGrid" id="memGrid"></div>
           </div>
 
           <!-- SLIDER -->
           <div class="panel" id="pSlider">
             <p class="q">Final lock: “Yes Energy” Calibration 🔒</p>
-            <div class="memInfo">Slide to <b>90%</b>+ to unlock.</div>
+            <div class="memInfo" id="lieText">Slide to <b>90%</b>+ to unlock. (Lie detector: armed.)</div>
             <div style="margin-top:10px;">
               <input id="yesSlider" type="range" min="0" max="100" value="8" />
               <div class="hudRow"><span>meh</span><span>YES</span></div>
@@ -200,49 +380,52 @@
           <!-- FINAL -->
           <div class="panel" id="pFinal">
             <p class="q">🏆 Certificate Unlocked</p>
-            <div style="font-size:18px; line-height:1.45;">
-              Congratulations. You are now officially my Valentine. 💘<br><br>
-              Rewards:
-              <ul style="margin:10px 0 0; padding-left:18px;">
-                <li>Dinner 🍝 (required)</li>
-                <li>Dessert 🍰 (non-negotiable)</li>
-                <li>Unreasonably cute photos 📸</li>
-              </ul>
-            </div>
 
-            <div class="stamp">✅ MATCH FOUND: AILA + YOU</div>
+            <div class="cert" id="cert">
+              <h2>Official Valentine Certificate</h2>
+              <p>Issued to: <b>Aila</b></p>
+              <p>Issued by: <b>Abhiraj</b></p>
+              <div class="stamp">✅ MATCH FOUND: AILA + ABHIRAJ</div>
 
-            <div class="meter">
-              <div><b>Yes Energy</b>: <span id="mYes">loading…</span></div>
-              <div class="mbar"><div class="mfill" id="bYes"></div></div>
-            </div>
-            <div class="meter">
-              <div><b>Laugh Compatibility</b>: <span id="mLaugh">loading…</span></div>
-              <div class="mbar"><div class="mfill" id="bLaugh"></div></div>
-            </div>
-            <div class="meter">
-              <div><b>Dessert Agreement</b>: <span id="mDessert">loading…</span></div>
-              <div class="mbar"><div class="mfill" id="bDessert"></div></div>
-            </div>
-            <div class="meter">
-              <div><b>Probability of Cute Date</b>: <span id="mCute">loading…</span></div>
-              <div class="mbar"><div class="mfill" id="bCute"></div></div>
+              <div class="meter">
+                <div><b>Yes Energy</b>: <span id="mYes">loading…</span></div>
+                <div class="mbar"><div class="mfill" id="bYes"></div></div>
+              </div>
+              <div class="meter">
+                <div><b>Laugh Compatibility</b>: <span id="mLaugh">loading…</span></div>
+                <div class="mbar"><div class="mfill" id="bLaugh"></div></div>
+              </div>
+              <div class="meter">
+                <div><b>Dessert Agreement</b>: <span id="mDessert">loading…</span></div>
+                <div class="mbar"><div class="mfill" id="bDessert"></div></div>
+              </div>
+              <div class="meter">
+                <div><b>Probability of Cute Date</b>: <span id="mCute">loading…</span></div>
+                <div class="mbar"><div class="mfill" id="bCute"></div></div>
+              </div>
+
+              <div style="margin-top:10px; color:var(--muted); font-size:14px;">
+                Rewards unlocked: 🍝 dinner + 🍰 dessert + 📸 cute photos
+              </div>
             </div>
 
             <div class="actions" style="margin-top:12px;">
-              <button class="primary" id="btnHearts">Confirm (hearts) 💖</button>
+              <button class="ok" id="btnHearts">Confirm 💖</button>
               <button class="ghost" id="btnCopy">Copy message</button>
+              <button class="ghost" id="btnDownload">Download certificate</button>
             </div>
           </div>
         </div>
 
+        <!-- SIDE -->
         <div class="pane">
           <div class="sideTitle">Quest Checklist</div>
           <ul class="sideList">
-            <li>Timed quiz (3 questions)</li>
-            <li>Memory match (6 pairs)</li>
-            <li>Yes-energy slider lock</li>
-            <li>Final certificate + stats</li>
+            <li>✨ Preloader “romance engine”</li>
+            <li>🎯 Timed quiz + streak bonus</li>
+            <li>🧠 Memory match (6 pairs)</li>
+            <li>🔒 Yes-energy lock (90%+)</li>
+            <li>🏆 Certificate + download button</li>
           </ul>
 
           <div class="kv">
@@ -253,17 +436,30 @@
           </div>
 
           <div style="margin-top:12px; color:var(--muted); font-size:14px; line-height:1.45;">
-            Send the link with: <b>“I made you a game.”</b>
+            Send the link with: <b>“Aila, I made you a game.”</b>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- preloader -->
+  <div class="overlay" id="overlay">
+    <div class="loaderCard">
+      <div class="loaderTitle">Loading Romance Engine…</div>
+      <p class="loaderText" id="loadText">Initializing butterflies…</p>
+      <div class="loadBar"><div class="loadFill" id="loadFill"></div></div>
+    </div>
+  </div>
+
   <div class="toast" id="toast">OK</div>
+  <div class="ach" id="ach">
+    <div class="achTitle" id="achTitle">Achievement Unlocked</div>
+    <p class="achText" id="achText">Text</p>
+  </div>
 
   <script>
-    // ===== Helpers =====
+    // Helpers
     const $ = (id)=>document.getElementById(id);
     const toastEl = $("toast");
     let toastTimer;
@@ -273,13 +469,24 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(()=>toastEl.classList.remove("show"), 1100);
     }
+
+    const achEl = $("ach");
+    let achTimer;
+    function achievement(title, text){
+      $("achTitle").textContent = title;
+      $("achText").textContent = text;
+      achEl.classList.add("show");
+      clearTimeout(achTimer);
+      achTimer = setTimeout(()=>achEl.classList.remove("show"), 2200);
+    }
+
     function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-    // ===== Floating emojis =====
+    // Floating emojis
     (function makeFloat(){
       const f = $("float");
       const emojis = ["💖","💗","💘","💞","🌹","✨","🍓","🎀"];
-      for(let i=0;i<20;i++){
+      for(let i=0;i<22;i++){
         const s=document.createElement("span");
         s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
         s.style.left = (Math.random()*100) + "%";
@@ -290,7 +497,7 @@
       }
     })();
 
-    // ===== Optional sound =====
+    // Optional sound
     let soundOn = false;
     let audioCtx = null;
     function beep(freq=660, ms=70, type="sine"){
@@ -301,7 +508,7 @@
         const g = audioCtx.createGain();
         o.type = type;
         o.frequency.value = freq;
-        g.gain.value = 0.04;
+        g.gain.value = 0.045;
         o.connect(g); g.connect(audioCtx.destination);
         o.start();
         setTimeout(()=>o.stop(), ms);
@@ -310,8 +517,8 @@
     function successSound(){ beep(784, 80, "triangle"); setTimeout(()=>beep(988, 90, "triangle"), 90); }
     function failSound(){ beep(220, 120, "sawtooth"); }
 
-    // ===== Confetti hearts =====
-    function heartsBurst(n=22){
+    // Hearts confetti
+    function heartsBurst(n=24){
       for(let i=0;i<n;i++){
         const s=document.createElement("span");
         s.textContent = ["💖","💗","💘","💞","✨"][Math.floor(Math.random()*5)];
@@ -330,7 +537,7 @@
       }
     }
 
-    // ===== Typewriter =====
+    // Typewriter
     const typingEl = $("typing");
     let typingTimer = null;
     function typeLine(text, cb){
@@ -348,34 +555,35 @@
       }, speed);
     }
 
-    // ===== Panels + HUD =====
+    // Panels
     function showPanel(id){
       ["pQuiz","pMemory","pSlider","pFinal"].forEach(pid => $(pid).classList.remove("show"));
       if(id) $(id).classList.add("show");
     }
 
+    // HUD
     let step = 0; // 0 idle, 1 quiz, 2 memory, 3 slider, 4 final
-    let xp = 0, lvl = 1, streak = 0;
+    let xp = 0, lvl = 1, streak = 0, bestStreak = 0;
 
     function setHUD(){
       $("xp").textContent = xp;
       $("lvl").textContent = lvl;
       $("streak").textContent = streak;
+      $("bestStreak").textContent = bestStreak;
 
-      const stepMapText = {0:"Step 0 / 3", 1:"Step 1 / 3", 2:"Step 2 / 3", 3:"Step 3 / 3", 4:"Completed ✅"};
-      $("stepText").textContent = stepMapText[step] ?? "—";
+      const stepText = {0:"Step 0 / 3", 1:"Step 1 / 3", 2:"Step 2 / 3", 3:"Step 3 / 3", 4:"Completed ✅"};
+      $("stepText").textContent = stepText[step] || "—";
 
-      // progress: 0..3 -> 0..100
       const pct = step === 0 ? 0 : (step >= 4 ? 100 : Math.round((step/3)*100));
       $("progressFill").style.width = pct + "%";
     }
 
     function addXP(n){
       xp += n;
-      const newLvl = 1 + Math.floor(xp / 120);
+      const newLvl = 1 + Math.floor(xp / 140);
       if(newLvl > lvl){
         lvl = newLvl;
-        toast(`Level up! 🎉 (Level ${lvl})`);
+        achievement("Level Up 🎉", `Level ${lvl} unlocked. Yes energy increasing.`);
         heartsBurst(10);
         successSound();
       }
@@ -384,18 +592,17 @@
 
     function bumpStreak(ok){
       streak = ok ? (streak + 1) : 0;
+      if(streak > bestStreak) bestStreak = streak;
       setHUD();
     }
 
-    // ===== Timer (quiz) =====
+    // Timer (quiz)
     let timer = null;
     let timeLeft = 0;
-
     function stopTimer(){
       clearInterval(timer);
       $("timerText").textContent = "Timer: —";
     }
-
     function startTimer(seconds, onFail){
       clearInterval(timer);
       timeLeft = seconds;
@@ -411,9 +618,9 @@
       }, 1000);
     }
 
-    // ===== QUIZ =====
+    // QUIZ
     const quiz = [
-      { q: "1) Choose the correct response:", a: 0, o: ["Yes, obviously 💖", "Maybe", "I need to consult my lawyer"] },
+      { q: "1) Confirm the correct response:", a: 0, o: ["Yes, obviously 💖", "Maybe", "I need to consult my lawyer"] },
       { q: "2) Pick a date difficulty:", a: 1, o: ["Hard mode (awkward eye contact)", "Easy mode (cute date + laughs)", "Expert mode (flowers + puns)"] },
       { q: "3) Select the best reward:", a: 2, o: ["Only dinner", "Only dessert", "Dinner + dessert 🍰"] }
     ];
@@ -435,9 +642,13 @@
             b.classList.add("good");
             stopTimer();
             bumpStreak(true);
-            addXP(35 + Math.min(streak,5)*5);
+            addXP(45 + Math.min(streak,5)*6);
             toast("Correct ✅");
             successSound();
+            if(qIdx === 2 && streak >= 3){
+              achievement("Perfect Streak 🔥", "Quiz cleared with a streak. Respect.");
+              addXP(25);
+            }
             setTimeout(()=>{
               qIdx++;
               if(qIdx >= quiz.length){
@@ -445,7 +656,7 @@
               } else {
                 renderQuiz();
               }
-            }, 380);
+            }, 350);
           } else {
             b.classList.add("bad");
             bumpStreak(false);
@@ -474,8 +685,8 @@
       renderQuiz();
     }
 
-    // ===== MEMORY GAME =====
-    const memEmojis = ["💖","🍓","✨","🌹","💘","🎀"]; // 6 pairs = 12 tiles
+    // MEMORY
+    const memEmojis = ["💖","🍓","✨","🌹","💘","🎀"];
     let memDeck = [];
     let firstPick = null;
     let lock = false;
@@ -540,10 +751,7 @@
       reveal(tile);
       beep(660, 45, "sine");
 
-      if(!firstPick){
-        firstPick = tile;
-        return;
-      }
+      if(!firstPick){ firstPick = tile; return; }
 
       movesLeft--;
       $("movesLeft").textContent = movesLeft;
@@ -559,10 +767,11 @@
           matched++;
           lock = false;
           bumpStreak(true);
-          addXP(25 + Math.min(streak,6)*4);
+          addXP(30 + Math.min(streak,6)*4);
           toast("Match ✅");
           successSound();
           if(matched === memEmojis.length){
+            achievement("Memory Master 🧠", "All pairs matched. Impressive.");
             heartsBurst(18);
             goToSlider();
           }
@@ -577,7 +786,7 @@
           failSound();
           toast("Nope 😄");
           if(movesLeft <= 0){
-            toast("Out of moves! Restarting…");
+            achievement("Plot Twist 😄", "Out of moves. Restarting memory game.");
             setupMemory();
           }
         }, 520);
@@ -591,24 +800,30 @@
       setupMemory();
     }
 
-    // ===== SLIDER LOCK =====
+    // SLIDER
     function goToSlider(){
       step = 3;
       setHUD();
       showPanel("pSlider");
       stopTimer();
-      typeLine("Mini-game 3: Yes Energy Calibration 🔒\nSlide to 90%+ to unlock the certificate.\n\nWe have… sensors. 👀");
+      typeLine("Mini-game 3: Yes Energy Calibration 🔒\nSlide to 90%+ to unlock.\n\nLie detector: armed. 👀");
 
       const slider = $("yesSlider");
       const btn = $("btnUnlock");
+      const lieText = $("lieText");
       slider.value = 8;
       btn.disabled = true;
 
       slider.oninput = ()=>{
         const v = Number(slider.value);
+        if(v < 40) lieText.innerHTML = "Current reading: <b>denial</b>. (Cute.)";
+        else if(v < 70) lieText.innerHTML = "Current reading: <b>maybe</b>. We can work with this.";
+        else if(v < 90) lieText.innerHTML = "Current reading: <b>almost yes</b>. Slide a little more 😄";
+        else lieText.innerHTML = "✅ Verified: <b>YES ENERGY DETECTED</b>.";
+
         if(v >= 90){
           btn.disabled = false;
-          toast("✅ Verified. Suspiciously correct.");
+          toast("✅ Verified.");
           successSound();
         } else {
           btn.disabled = true;
@@ -616,13 +831,14 @@
       };
 
       btn.onclick = ()=>{
-        addXP(80);
+        addXP(90);
+        achievement("Lock Cracked 🔓", "Certificate unlocked.");
         heartsBurst(24);
         goToFinal();
       };
     }
 
-    // ===== FINAL =====
+    // FINAL
     function animateMeters(){
       const items = [
         ["bYes","mYes", 95, 100, 160],
@@ -645,17 +861,19 @@
       setHUD();
       showPanel("pFinal");
       stopTimer();
-      typeLine("Quest complete.\nAila, you passed with distinction.\n\n(We knew you would.) 💖");
+      typeLine("Quest complete.\nAila, you passed with distinction.\n\nAbhiraj is requesting a date. 💖");
       animateMeters();
     }
 
-    // ===== Copy message =====
+    // Copy message
     async function copyMessage(){
       const msg =
 `Aila 💖
 
-I made you a little Valentine Quest and you passed with distinction.
+I made you a little Valentine Quest and you completed it.
 So… will you be my Valentine?
+
+— Abhiraj
 
 Rewards unlocked:
 🍝 Dinner
@@ -678,21 +896,105 @@ When are you free? 😄`;
       }
     }
 
-    // ===== Buttons =====
+    // Download certificate as PNG (screenshot)
+    async function downloadCertificate(){
+      const node = $("cert");
+      // Use SVG foreignObject trick (works well for simple DOM)
+      const rect = node.getBoundingClientRect();
+      const width = Math.ceil(rect.width);
+      const height = Math.ceil(rect.height);
+
+      const cloned = node.cloneNode(true);
+      cloned.style.margin = "0";
+      cloned.style.boxShadow = "none";
+
+      const wrapper = document.createElement("div");
+      wrapper.style.width = width + "px";
+      wrapper.style.height = height + "px";
+      wrapper.style.background = "#fff";
+      wrapper.style.padding = "12px";
+      wrapper.appendChild(cloned);
+
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width+24}" height="${height+24}">
+          <foreignObject width="100%" height="100%">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;">
+              ${wrapper.innerHTML}
+            </div>
+          </foreignObject>
+        </svg>`;
+
+      const blob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = width+24;
+        canvas.height = height+24;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img,0,0);
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob((png)=>{
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(png);
+          a.download = "Aila-Abhiraj-Valentine-Certificate.png";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(()=> URL.revokeObjectURL(a.href), 1000);
+          toast("Downloaded ✅");
+          achievement("Souvenir 📸", "Certificate saved as PNG.");
+        }, "image/png");
+      };
+      img.onerror = () => {
+        toast("Download not supported here 😅");
+      };
+      img.src = url;
+    }
+
+    // Preloader
+    (function runLoader(){
+      const overlay = $("overlay");
+      const loadFill = $("loadFill");
+      const loadText = $("loadText");
+      const steps = [
+        "Initializing butterflies…",
+        "Calibrating yes energy…",
+        "Warming up cheesy jokes…",
+        "Loading mini-games…",
+        "Ready ✅"
+      ];
+      let p = 0;
+      const t = setInterval(()=>{
+        loadText.textContent = steps[Math.min(p, steps.length-1)];
+        loadFill.style.width = (p*25) + "%";
+        p++;
+        if(p > 4){
+          clearInterval(t);
+          setTimeout(()=> overlay.classList.add("hide"), 350);
+        }
+      }, 420);
+    })();
+
+    // Buttons
     $("btnStart").onclick = ()=>{
-      // First click starts quest into quiz
       goToQuiz();
       $("btnStart").textContent = "Quest Running ✅";
-      $("btnStart").disabled = true; // avoids double-start confusion
+      $("btnStart").disabled = true;
+      achievement("Quest Started 🚀", "Aila entered the arena.");
     };
 
     $("btnHint").onclick = ()=>{
       const hints = {
-        0: "Hint: Click Start. The quest begins. 😄",
-        1: "Hint: The correct option is usually the one with “Yes energy”.",
+        0: "Hint: Press Start 😄",
+        1: "Hint: The correct option is the one with ‘Yes energy’.",
         2: "Hint: Try remembering corners first.",
         3: "Hint: 90%+. We’re watching 👀",
-        4: "Hint: Copy the message and send it. Immediately."
+        4: "Hint: Download the certificate & send it 😄"
       };
       toast(hints[step] || "Hint: You’re doing great 😄");
       beep(523, 70, "triangle");
@@ -706,8 +1008,7 @@ When are you free? 😄`;
     };
 
     $("btnReset").onclick = ()=>{
-      // reset everything
-      step = 0; xp = 0; lvl = 1; streak = 0;
+      step = 0; xp = 0; lvl = 1; streak = 0; bestStreak = 0;
       setHUD();
       stopTimer();
       showPanel(null);
@@ -715,17 +1016,20 @@ When are you free? 😄`;
       $("btnStart").textContent = "Start Quest 🚀";
       typeLine("Reset complete.\nAila has been granted a fresh run. Use it wisely. 😄");
       toast("Reset ✅");
+      achievement("Reset 🧼", "Clean slate. New run begins.");
     };
 
     $("btnHearts").onclick = ()=>{
       heartsBurst(40);
       toast("Valentine confirmed 💖");
       successSound();
+      achievement("Confirmed 💘", "Match approved by the universe.");
     };
 
     $("btnCopy").onclick = copyMessage;
+    $("btnDownload").onclick = downloadCertificate;
 
-    // ===== Initial text =====
+    // Start text
     setHUD();
     typeLine("Loading Valentine Quest…\nAila, your mission starts when you press Start. 💘");
   </script>
