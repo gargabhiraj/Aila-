@@ -1,86 +1,44 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aila — Valentine Quest</title>
+  <title>Aila — Valentine Quest (Abhiraj)</title>
   <style>
     :root{
-      --bg1:#ff2d55;
-      --bg2:#ffb3c1;
-      --bg3:#ffd6e0;
-      --card:#ffffffee;
-      --ink:#141417;
-      --muted:#5c5c66;
-      --accent:#ff2d55;
-      --good:#19c37d;
-      --warn:#ff9500;
+      --bg1:#ff2d55; --bg2:#ffb3c1; --card:#ffffffee;
+      --ink:#141417; --muted:#5c5c66; --accent:#ff2d55;
+      --good:#19c37d; --warn:#ff9500;
       --shadow: 0 18px 55px rgba(0,0,0,.22);
-      --radius: 22px;
+      --r: 22px;
     }
     *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(900px 700px at 18% 18%, var(--bg3) 0%, transparent 60%),
+        radial-gradient(900px 700px at 18% 18%, #ffd6e0 0%, transparent 60%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
       min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display:flex; align-items:center; justify-content:center;
       color:var(--ink);
       overflow:hidden;
     }
     .wrap{ width:min(980px, 94vw); }
-
     .card{
       background:var(--card);
-      border-radius:var(--radius);
+      border-radius:var(--r);
       box-shadow:var(--shadow);
-      padding: 18px;
+      padding:18px;
       position:relative;
       overflow:hidden;
       backdrop-filter: blur(7px);
     }
 
-    /* Preloader overlay */
-    .overlay{
-      position:absolute; inset:0;
-      background: linear-gradient(135deg, rgba(255,45,85,.88), rgba(255,179,193,.88));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:9999;
-      transition: opacity .35s ease, transform .35s ease;
-    }
-    .overlay.hide{
-      opacity:0;
-      transform: scale(1.02);
-      pointer-events:none;
-    }
-    .loaderCard{
-      width:min(520px, 92vw);
-      background:#ffffffee;
-      border-radius:22px;
-      border:1px solid #00000012;
-      box-shadow: 0 18px 55px rgba(0,0,0,.25);
-      padding:18px;
-      text-align:center;
-    }
-    .loaderTitle{ font-size:22px; font-weight:900; margin:4px 0 10px; }
-    .loaderText{ color:var(--muted); margin:0 0 12px; font-size:14px; }
-    .loadBar{ height:10px; background:#00000010; border-radius:999px; overflow:hidden; }
-    .loadFill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .25s ease; }
-
-    /* Floating emojis */
+    /* floating background */
     .float{ position:absolute; inset:0; pointer-events:none; opacity:.18; }
-    .float span{
-      position:absolute;
-      animation: drift linear infinite;
-      user-select:none;
-      will-change: transform;
-    }
+    .float span{ position:absolute; animation: drift linear infinite; user-select:none; will-change:transform; }
     @keyframes drift{
       from{ transform: translateY(110vh) rotate(0deg); }
       to  { transform: translateY(-20vh) rotate(360deg); }
@@ -92,90 +50,46 @@
       margin-bottom:10px;
     }
     .pill{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#0000000a;
-      border:1px solid #00000014;
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      background:#0000000a; border:1px solid #00000014;
+      white-space:nowrap; display:inline-flex; gap:8px; align-items:center;
       user-select:none;
-      white-space:nowrap;
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
     }
     .pill strong{ font-weight:900; }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap:12px;
-    }
+    .grid{ display:grid; grid-template-columns: 1.25fr .75fr; gap:12px; }
     @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
 
     .pane{
-      background:#fff;
-      border:1px solid #00000012;
-      border-radius:18px;
-      padding:14px;
-      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      background:#fff; border:1px solid #00000012; border-radius:18px;
+      padding:14px; box-shadow: 0 10px 24px rgba(0,0,0,.06);
     }
-    .title{
-      font-size:34px;
-      margin: 2px 0 6px;
-      letter-spacing:-0.02em;
-    }
-    .subtitle{
-      margin:0 0 10px;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.35;
-    }
+    .title{ font-size:34px; margin:2px 0 6px; letter-spacing:-0.02em; }
+    .subtitle{ margin:0 0 10px; color:var(--muted); font-size:15px; line-height:1.35; }
 
     .bar{ height:10px; background:#00000010; border-radius:999px; overflow:hidden; }
     .fill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .35s ease; }
-    .hudRow{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:6px;
-      font-size:13px;
-      color:var(--muted);
-    }
+    .hudRow{ display:flex; justify-content:space-between; gap:10px; margin-top:6px; font-size:13px; color:var(--muted); }
 
     .typingRow{ display:flex; gap:8px; align-items:flex-start; margin-top:12px; }
-    .typing{
-      margin:0;
-      min-height:74px;
-      white-space:pre-wrap;
-      font-size:18px;
-      line-height:1.35;
-      flex:1;
-    }
-    .caret{
-      width:10px; height:1em;
-      border-left:2px solid #111;
-      transform: translateY(4px);
-      animation: blink .9s infinite;
-    }
+    .typing{ margin:0; min-height:74px; white-space:pre-wrap; font-size:18px; line-height:1.35; flex:1; }
+    .caret{ width:10px; height:1em; border-left:2px solid #111; transform: translateY(4px); animation: blink .9s infinite; }
     @keyframes blink{ 50%{ opacity:0; } }
 
     .actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
     button{
-      font-size:16px;
-      padding: 11px 14px;
-      border:0;
-      border-radius: 16px;
-      cursor:pointer;
-      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+      font-size:16px; padding:11px 14px;
+      border:0; border-radius:16px; cursor:pointer;
+      transition: transform .18s ease, filter .18s ease;
       user-select:none;
     }
     button:active{ transform: scale(.98); }
-    .primary{ background: var(--accent); color:#fff; box-shadow: 0 12px 26px rgba(255,45,85,.22); }
+    .primary{ background: var(--accent); color:#fff; }
     .primary:hover{ filter: brightness(1.03); transform: translateY(-1px); }
     .ghost{ background:#00000008; border:1px solid #00000014; color:#222; }
     .ghost:hover{ filter: brightness(1.03); transform: translateY(-1px); }
     .danger{ background:#111; color:#fff; }
-    .ok{ background: #19c37d; color:#fff; }
+    .ok{ background: var(--good); color:#fff; }
 
     .panel{ display:none; margin-top:12px; }
     .panel.show{ display:block; }
@@ -183,56 +97,46 @@
     .q{ font-weight:900; margin:0 0 8px; }
     .opts{ display:grid; gap:8px; }
     .opt{
-      padding:12px;
-      border-radius:14px;
-      border:1px solid #00000014;
-      background:#00000005;
-      cursor:pointer;
-      transition: transform .14s ease, filter .14s ease;
+      padding:12px; border-radius:14px; border:1px solid #00000014; background:#00000005;
+      cursor:pointer; transition: transform .14s ease, filter .14s ease;
       font-size:15px;
     }
     .opt:hover{ transform: translateY(-1px); filter: brightness(1.03); }
     .opt.good{ background: #19c37d16; border-color:#19c37d55; }
     .opt.bad{ background: #ff2d5516; border-color:#ff2d5555; }
 
-    /* memory */
-    .memInfo{ color:var(--muted); font-size:14px; display:flex; gap:14px; flex-wrap:wrap; }
-    .memGrid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top:10px; }
-    @media (max-width: 520px){ .memGrid{ grid-template-columns: repeat(3, 1fr); } }
-    .tile{
-      aspect-ratio: 1/1;
-      border-radius:16px;
-      border:1px solid #00000014;
-      background:#00000006;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:28px;
+    /* boss fight */
+    .bossBox{
+      display:grid; gap:10px;
+      border:1px solid #00000012; background:#00000005; border-radius:16px; padding:12px;
+    }
+    .bigHeart{
+      width: 140px; height: 140px;
+      border-radius: 999px;
+      display:flex; align-items:center; justify-content:center;
+      margin: 6px auto 0;
+      background: radial-gradient(circle at 30% 30%, #fff, #ffe6ec);
+      border: 1px solid #00000012;
+      box-shadow: 0 14px 30px rgba(0,0,0,.12);
       cursor:pointer;
       user-select:none;
-      transition: transform .14s ease, filter .14s ease, background .14s ease;
-      position:relative;
+      transition: transform .08s ease;
+      font-size: 58px;
     }
-    .tile:hover{ transform: translateY(-1px); filter: brightness(1.03); }
-    .tile.revealed{ background:#fff; }
-    .tile.matched{ background:#19c37d16; border-color:#19c37d55; cursor:default; }
+    .bigHeart:active{ transform: scale(.96); }
+    .miniBar{ height:10px; background:#00000012; border-radius:999px; overflow:hidden; }
+    .miniFill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .12s linear; }
+    .bossStats{ display:flex; justify-content:space-between; gap:10px; font-size:13px; color:var(--muted); flex-wrap:wrap; }
 
-    /* slider */
-    input[type="range"]{ width:100%; accent-color: var(--accent); }
-
-    /* certificate */
+    /* final certificate */
     .cert{
-      margin-top:12px;
+      margin-top:10px;
       background: linear-gradient(135deg, #fff, #fff7f9);
       border:1px solid #00000012;
       border-radius:18px;
       padding:14px;
       box-shadow: 0 10px 24px rgba(0,0,0,.06);
-      position:relative;
-      overflow:hidden;
     }
-    .cert h2{ margin:0 0 6px; font-size:20px; }
-    .cert p{ margin:0; color:var(--muted); }
     .stamp{
       display:inline-block;
       padding:8px 12px;
@@ -244,58 +148,33 @@
       background:#19c37d14;
       width: fit-content;
       margin-top:10px;
-      animation: pop .6s ease both;
+      animation: pop .55s ease both;
     }
     @keyframes pop{
-      from{ transform: translateY(8px) rotate(-10deg) scale(.9); opacity:.0; }
+      from{ transform: translateY(8px) rotate(-10deg) scale(.9); opacity:0; }
       to{ transform: translateY(0) rotate(-6deg) scale(1); opacity:1; }
     }
-
-    .meter{
-      background:#00000008;
-      border:1px solid #00000012;
-      border-radius:14px;
-      padding:10px 12px;
-      display:grid;
-      gap:6px;
-      margin-top:10px;
-    }
-    .mbar{ height:10px; background:#00000012; border-radius:999px; overflow:hidden; }
+    .meter{ background:#00000008; border:1px solid #00000012; border-radius:14px; padding:10px 12px; display:grid; gap:6px; margin-top:10px; }
+    .mbar{ height: 10px; background:#00000012; border-radius:999px; overflow:hidden; }
     .mfill{ height:100%; width:0%; background: linear-gradient(90deg, #ff2d55, #8b5cf6); border-radius:999px; transition: width .6s ease; }
 
-    /* achievement + toast */
+    /* toast + achievements */
     .toast{
-      position: fixed;
-      left:50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: #111;
-      color:#fff;
-      padding: 10px 14px;
-      border-radius: 999px;
+      position: fixed; left:50%; bottom: 18px; transform: translateX(-50%);
+      background: #111; color:#fff; padding: 10px 14px; border-radius: 999px;
       box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      font-size: 14px;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease;
-      z-index: 99999;
+      font-size: 14px; opacity:0; pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease; z-index: 99999;
     }
     .toast.show{ opacity:1; transform: translateX(-50%) translateY(-4px); }
 
     .ach{
-      position: fixed;
-      right: 18px;
-      top: 18px;
+      position: fixed; right: 18px; top: 18px;
       width: min(320px, 90vw);
-      background:#ffffff;
-      border:1px solid #00000012;
-      border-radius:18px;
+      background:#fff; border:1px solid #00000012; border-radius:18px;
       box-shadow: 0 14px 40px rgba(0,0,0,.18);
-      padding:12px;
-      transform: translateY(-10px);
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .25s ease, transform .25s ease;
+      padding:12px; opacity:0; transform: translateY(-10px);
+      pointer-events:none; transition: opacity .25s ease, transform .25s ease;
       z-index: 99998;
     }
     .ach.show{ opacity:1; transform: translateY(0); }
@@ -323,17 +202,16 @@
       </div>
 
       <div class="grid">
-        <!-- MAIN -->
         <div class="pane">
           <div class="title">Aila 💖</div>
           <p class="subtitle">
             Beat the mini-games to unlock the certificate.
-            (Made with dangerously high effort by <b>Abhiraj</b>.)
+            Built by <b>Abhiraj</b> with unreasonable effort.
           </p>
 
           <div class="bar"><div class="fill" id="progressFill"></div></div>
           <div class="hudRow">
-            <span id="stepText">Step 0 / 3</span>
+            <span id="stepText">Step 0 / 4</span>
             <span id="timerText">Timer: —</span>
           </div>
 
@@ -357,17 +235,36 @@
           <!-- MEMORY -->
           <div class="panel" id="pMemory">
             <p class="q">Mini-game: Memory Match 🧠</p>
-            <div class="memInfo">
+            <div class="hudRow">
               <span>Moves left: <b id="movesLeft">10</b></span>
-              <span>Best streak: <b id="bestStreak">0</b></span>
+              <span>Matches: <b id="matches">0</b>/6</span>
             </div>
-            <div class="memGrid" id="memGrid"></div>
+            <div class="opts" style="margin-top:10px;" id="memGrid"></div>
+          </div>
+
+          <!-- BOSS -->
+          <div class="panel" id="pBoss">
+            <p class="q">Boss Fight: Heart Tap Frenzy 💘</p>
+            <div class="bossBox">
+              <div class="bossStats">
+                <span>Goal: <b>20 taps</b></span>
+                <span>Time: <b id="bossTime">7</b>s</span>
+                <span>Taps: <b id="bossTaps">0</b></span>
+              </div>
+              <div class="miniBar"><div class="miniFill" id="bossFill"></div></div>
+              <div class="bigHeart" id="bossHeart" title="Tap me">💖</div>
+              <div style="color:var(--muted); font-size:14px; text-align:center;">
+                Tap the heart fast. No mercy. 😄
+              </div>
+            </div>
           </div>
 
           <!-- SLIDER -->
           <div class="panel" id="pSlider">
-            <p class="q">Final lock: “Yes Energy” Calibration 🔒</p>
-            <div class="memInfo" id="lieText">Slide to <b>90%</b>+ to unlock. (Lie detector: armed.)</div>
+            <p class="q">Final Lock: Yes Energy Calibration 🔒</p>
+            <div style="color:var(--muted); font-size:14px;" id="lieText">
+              Slide to <b>90%</b>+ to unlock. (Lie detector: armed.)
+            </div>
             <div style="margin-top:10px;">
               <input id="yesSlider" type="range" min="0" max="100" value="8" />
               <div class="hudRow"><span>meh</span><span>YES</span></div>
@@ -380,11 +277,11 @@
           <!-- FINAL -->
           <div class="panel" id="pFinal">
             <p class="q">🏆 Certificate Unlocked</p>
-
-            <div class="cert" id="cert">
-              <h2>Official Valentine Certificate</h2>
-              <p>Issued to: <b>Aila</b></p>
-              <p>Issued by: <b>Abhiraj</b></p>
+            <div class="cert">
+              <div style="font-size:18px; line-height:1.45;">
+                Congratulations, Aila. You completed the quest. 💖<br>
+                Therefore, by the ancient laws of romance, you are officially Abhiraj’s Valentine.
+              </div>
               <div class="stamp">✅ MATCH FOUND: AILA + ABHIRAJ</div>
 
               <div class="meter">
@@ -404,63 +301,60 @@
                 <div class="mbar"><div class="mfill" id="bCute"></div></div>
               </div>
 
-              <div style="margin-top:10px; color:var(--muted); font-size:14px;">
-                Rewards unlocked: 🍝 dinner + 🍰 dessert + 📸 cute photos
+              <div style="margin-top:12px;">
+                <div style="font-weight:900;">Pick your reward route:</div>
+                <div class="actions" style="margin-top:8px;">
+                  <button class="ghost" id="btnCoffee">☕ Coffee date</button>
+                  <button class="ghost" id="btnDinner">🍝 Dinner date</button>
+                  <button class="ghost" id="btnDessert">🍰 Dessert first</button>
+                </div>
+                <div style="margin-top:10px; color:var(--muted);" id="dateChoice"></div>
               </div>
             </div>
 
             <div class="actions" style="margin-top:12px;">
               <button class="ok" id="btnHearts">Confirm 💖</button>
               <button class="ghost" id="btnCopy">Copy message</button>
-              <button class="ghost" id="btnDownload">Download certificate</button>
             </div>
           </div>
         </div>
 
-        <!-- SIDE -->
         <div class="pane">
-          <div class="sideTitle">Quest Checklist</div>
+          <div class="sideTitle">What’s inside</div>
           <ul class="sideList">
-            <li>✨ Preloader “romance engine”</li>
-            <li>🎯 Timed quiz + streak bonus</li>
-            <li>🧠 Memory match (6 pairs)</li>
-            <li>🔒 Yes-energy lock (90%+)</li>
-            <li>🏆 Certificate + download button</li>
+            <li>Timed quiz</li>
+            <li>Memory match</li>
+            <li>Boss fight (tap frenzy)</li>
+            <li>Yes-energy lock</li>
+            <li>Final date picker</li>
           </ul>
 
           <div class="kv">
-            <b>Goal</b><span>Unlock certificate</span>
+            <b>Match</b><span>Aila + Abhiraj</span>
             <b>Cheese</b><span>High 🧀</span>
             <b>Vibes</b><span>Immaculate ✨</span>
             <b>No button</b><span>Deleted ✅</span>
           </div>
 
           <div style="margin-top:12px; color:var(--muted); font-size:14px; line-height:1.45;">
-            Send the link with: <b>“Aila, I made you a game.”</b>
+            If GitHub Pages shows an old version, do a hard refresh:
+            <b>Ctrl+F5</b> (Windows) / <b>Cmd+Shift+R</b> (Mac).
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- preloader -->
-  <div class="overlay" id="overlay">
-    <div class="loaderCard">
-      <div class="loaderTitle">Loading Romance Engine…</div>
-      <p class="loaderText" id="loadText">Initializing butterflies…</p>
-      <div class="loadBar"><div class="loadFill" id="loadFill"></div></div>
-    </div>
-  </div>
-
   <div class="toast" id="toast">OK</div>
   <div class="ach" id="ach">
-    <div class="achTitle" id="achTitle">Achievement Unlocked</div>
+    <div class="achTitle" id="achTitle">Achievement</div>
     <p class="achText" id="achText">Text</p>
   </div>
 
   <script>
-    // Helpers
+    // ----- Helpers -----
     const $ = (id)=>document.getElementById(id);
+
     const toastEl = $("toast");
     let toastTimer;
     function toast(msg){
@@ -482,7 +376,7 @@
 
     function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-    // Floating emojis
+    // ----- Floating emojis -----
     (function makeFloat(){
       const f = $("float");
       const emojis = ["💖","💗","💘","💞","🌹","✨","🍓","🎀"];
@@ -497,7 +391,7 @@
       }
     })();
 
-    // Optional sound
+    // ----- Optional sound -----
     let soundOn = false;
     let audioCtx = null;
     function beep(freq=660, ms=70, type="sine"){
@@ -517,7 +411,7 @@
     function successSound(){ beep(784, 80, "triangle"); setTimeout(()=>beep(988, 90, "triangle"), 90); }
     function failSound(){ beep(220, 120, "sawtooth"); }
 
-    // Hearts confetti
+    // ----- Confetti hearts -----
     function heartsBurst(n=24){
       for(let i=0;i<n;i++){
         const s=document.createElement("span");
@@ -537,7 +431,7 @@
       }
     }
 
-    // Typewriter
+    // ----- Typewriter -----
     const typingEl = $("typing");
     let typingTimer = null;
     function typeLine(text, cb){
@@ -555,26 +449,33 @@
       }, speed);
     }
 
-    // Panels
+    // ----- Panels -----
     function showPanel(id){
-      ["pQuiz","pMemory","pSlider","pFinal"].forEach(pid => $(pid).classList.remove("show"));
+      ["pQuiz","pMemory","pBoss","pSlider","pFinal"].forEach(pid => $(pid).classList.remove("show"));
       if(id) $(id).classList.add("show");
     }
 
-    // HUD
-    let step = 0; // 0 idle, 1 quiz, 2 memory, 3 slider, 4 final
-    let xp = 0, lvl = 1, streak = 0, bestStreak = 0;
+    // ----- HUD -----
+    let step = 0; // 0 idle, 1 quiz, 2 memory, 3 boss, 4 slider, 5 final
+    let xp = 0, lvl = 1, streak = 0;
 
     function setHUD(){
       $("xp").textContent = xp;
       $("lvl").textContent = lvl;
       $("streak").textContent = streak;
-      $("bestStreak").textContent = bestStreak;
 
-      const stepText = {0:"Step 0 / 3", 1:"Step 1 / 3", 2:"Step 2 / 3", 3:"Step 3 / 3", 4:"Completed ✅"};
-      $("stepText").textContent = stepText[step] || "—";
+      const map = {
+        0:"Step 0 / 4",
+        1:"Step 1 / 4 (Quiz)",
+        2:"Step 2 / 4 (Memory)",
+        3:"Step 3 / 4 (Boss)",
+        4:"Step 4 / 4 (Lock)",
+        5:"Completed ✅"
+      };
+      $("stepText").textContent = map[step] || "—";
 
-      const pct = step === 0 ? 0 : (step >= 4 ? 100 : Math.round((step/3)*100));
+      // progress 0..4 => 0..100
+      const pct = step === 0 ? 0 : (step >= 5 ? 100 : Math.round((step/4)*100));
       $("progressFill").style.width = pct + "%";
     }
 
@@ -583,7 +484,7 @@
       const newLvl = 1 + Math.floor(xp / 140);
       if(newLvl > lvl){
         lvl = newLvl;
-        achievement("Level Up 🎉", `Level ${lvl} unlocked. Yes energy increasing.`);
+        achievement("Level Up 🎉", `Level ${lvl} unlocked.`);
         heartsBurst(10);
         successSound();
       }
@@ -592,11 +493,10 @@
 
     function bumpStreak(ok){
       streak = ok ? (streak + 1) : 0;
-      if(streak > bestStreak) bestStreak = streak;
       setHUD();
     }
 
-    // Timer (quiz)
+    // ----- Timer (Quiz + Boss) -----
     let timer = null;
     let timeLeft = 0;
     function stopTimer(){
@@ -618,9 +518,9 @@
       }, 1000);
     }
 
-    // QUIZ
+    // ----- QUIZ -----
     const quiz = [
-      { q: "1) Confirm the correct response:", a: 0, o: ["Yes, obviously 💖", "Maybe", "I need to consult my lawyer"] },
+      { q: "1) Choose the correct response:", a: 0, o: ["Yes, obviously 💖", "Maybe", "I need to consult my lawyer"] },
       { q: "2) Pick a date difficulty:", a: 1, o: ["Hard mode (awkward eye contact)", "Easy mode (cute date + laughs)", "Expert mode (flowers + puns)"] },
       { q: "3) Select the best reward:", a: 2, o: ["Only dinner", "Only dessert", "Dinner + dessert 🍰"] }
     ];
@@ -645,10 +545,12 @@
             addXP(45 + Math.min(streak,5)*6);
             toast("Correct ✅");
             successSound();
+
             if(qIdx === 2 && streak >= 3){
-              achievement("Perfect Streak 🔥", "Quiz cleared with a streak. Respect.");
+              achievement("Perfect Streak 🔥", "Quiz cleared with a streak.");
               addXP(25);
             }
+
             setTimeout(()=>{
               qIdx++;
               if(qIdx >= quiz.length){
@@ -656,14 +558,14 @@
               } else {
                 renderQuiz();
               }
-            }, 350);
+            }, 260);
           } else {
             b.classList.add("bad");
             bumpStreak(false);
             addXP(5);
             toast("Nice try 😄");
             failSound();
-            setTimeout(()=> b.classList.remove("bad"), 650);
+            setTimeout(()=> b.classList.remove("bad"), 500);
           }
         };
         opts.appendChild(b);
@@ -678,14 +580,13 @@
     }
 
     function goToQuiz(){
-      step = 1;
-      setHUD();
-      typeLine("Mini-game 1: Timed Quiz 🎯\nAnswer all 3 questions to continue.\n\n(Your streak is being judged.)");
+      step = 1; setHUD();
+      typeLine("Mini-game 1: Timed Quiz 🎯\nAnswer all 3 questions.\n\n(Your streak is being watched.)");
       qIdx = 0;
       renderQuiz();
     }
 
-    // MEMORY
+    // ----- MEMORY (simple, reliable) -----
     const memEmojis = ["💖","🍓","✨","🌹","💘","🎀"];
     let memDeck = [];
     let firstPick = null;
@@ -704,11 +605,9 @@
     function setupMemory(){
       showPanel("pMemory");
       stopTimer();
-      matched = 0;
-      firstPick = null;
-      lock = false;
-      movesLeft = 10;
+      matched = 0; firstPick = null; lock = false; movesLeft = 10;
       $("movesLeft").textContent = movesLeft;
+      $("matches").textContent = matched;
 
       memDeck = shuffle([...memEmojis, ...memEmojis]);
       const grid = $("memGrid");
@@ -716,35 +615,41 @@
 
       memDeck.forEach((emoji)=>{
         const t = document.createElement("div");
-        t.className = "tile";
+        t.className = "opt";            // reuse opt style to keep it simple
+        t.style.display = "flex";
+        t.style.alignItems = "center";
+        t.style.justifyContent = "center";
+        t.style.fontSize = "26px";
+        t.style.height = "62px";
         t.dataset.emoji = emoji;
         t.dataset.state = "hidden";
         t.textContent = "❓";
-        t.onclick = ()=> onTileClick(t);
+        t.onclick = ()=> onMemClick(t);
         grid.appendChild(t);
       });
     }
 
     function reveal(tile){
-      tile.classList.add("revealed");
       tile.textContent = tile.dataset.emoji;
       tile.dataset.state = "revealed";
+      tile.classList.add("good");
     }
     function hide(tile){
-      tile.classList.remove("revealed");
       tile.textContent = "❓";
       tile.dataset.state = "hidden";
+      tile.classList.remove("good");
+      tile.classList.remove("bad");
     }
-    function markMatched(a,b){
-      a.classList.remove("revealed");
-      b.classList.remove("revealed");
-      a.classList.add("matched");
-      b.classList.add("matched");
+    function match(a,b){
       a.dataset.state = "matched";
       b.dataset.state = "matched";
+      a.classList.add("good");
+      b.classList.add("good");
+      a.style.cursor = "default";
+      b.style.cursor = "default";
     }
 
-    function onTileClick(tile){
+    function onMemClick(tile){
       if(lock) return;
       if(tile.dataset.state !== "hidden") return;
 
@@ -763,21 +668,24 @@
       if(a.dataset.emoji === b.dataset.emoji){
         lock = true;
         setTimeout(()=>{
-          markMatched(a,b);
+          match(a,b);
           matched++;
+          $("matches").textContent = matched;
           lock = false;
           bumpStreak(true);
           addXP(30 + Math.min(streak,6)*4);
           toast("Match ✅");
           successSound();
+
           if(matched === memEmojis.length){
-            achievement("Memory Master 🧠", "All pairs matched. Impressive.");
-            heartsBurst(18);
-            goToSlider();
+            achievement("Memory Master 🧠", "All pairs matched.");
+            heartsBurst(16);
+            goToBoss();
           }
-        }, 220);
+        }, 180);
       } else {
         lock = true;
+        a.classList.add("bad"); b.classList.add("bad");
         setTimeout(()=>{
           hide(a); hide(b);
           lock = false;
@@ -786,7 +694,7 @@
           failSound();
           toast("Nope 😄");
           if(movesLeft <= 0){
-            achievement("Plot Twist 😄", "Out of moves. Restarting memory game.");
+            achievement("Plot Twist 😄", "Out of moves. Restarting…");
             setupMemory();
           }
         }, 520);
@@ -794,19 +702,77 @@
     }
 
     function goToMemory(){
-      step = 2;
-      setHUD();
-      typeLine("Mini-game 2: Memory Match 🧠\nMatch all pairs within 10 moves.\n\nYes, it’s serious.");
+      step = 2; setHUD();
+      typeLine("Mini-game 2: Memory Match 🧠\nMatch all pairs within 10 moves.\n\nNo pressure. (Some pressure.)");
       setupMemory();
     }
 
-    // SLIDER
+    // ----- BOSS FIGHT -----
+    let bossTaps = 0;
+    let bossActive = false;
+
+    function goToBoss(){
+      step = 3; setHUD();
+      showPanel("pBoss");
+      stopTimer();
+      typeLine("Boss Fight 💘\nTap the heart 20 times in 7 seconds.\n\nAila, I believe in you. 😄");
+
+      bossTaps = 0;
+      bossActive = true;
+      $("bossTaps").textContent = bossTaps;
+      $("bossTime").textContent = "7";
+      $("bossFill").style.width = "0%";
+
+      let bossSeconds = 7;
+      clearInterval(timer);
+      $("timerText").textContent = `Timer: ${bossSeconds}s`;
+
+      timer = setInterval(()=>{
+        bossSeconds--;
+        $("bossTime").textContent = String(bossSeconds);
+        $("timerText").textContent = `Timer: ${bossSeconds}s`;
+        if(bossSeconds <= 0){
+          clearInterval(timer);
+          bossActive = false;
+          $("timerText").textContent = "Timer: 0s";
+          if(bossTaps >= 20){
+            // already won
+            return;
+          }
+          failSound();
+          toast("Boss won 😄 Try again!");
+          achievement("Rematch 🔁", "The heart demands more taps.");
+          setTimeout(goToBoss, 650);
+        }
+      }, 1000);
+    }
+
+    $("bossHeart").addEventListener("click", ()=>{
+      if(!bossActive) return;
+      bossTaps++;
+      $("bossTaps").textContent = bossTaps;
+      $("bossFill").style.width = Math.min(100, (bossTaps/20)*100) + "%";
+      beep(880, 30, "triangle");
+
+      if(bossTaps === 10) achievement("Halfway 💪", "10 taps. Keep going!");
+      if(bossTaps >= 20){
+        bossActive = false;
+        clearInterval(timer);
+        $("timerText").textContent = "Timer: —";
+        successSound();
+        heartsBurst(20);
+        addXP(90);
+        achievement("Boss Defeated 🏆", "Heart tapped into submission.");
+        setTimeout(goToSlider, 400);
+      }
+    });
+
+    // ----- SLIDER LOCK -----
     function goToSlider(){
-      step = 3;
-      setHUD();
+      step = 4; setHUD();
       showPanel("pSlider");
       stopTimer();
-      typeLine("Mini-game 3: Yes Energy Calibration 🔒\nSlide to 90%+ to unlock.\n\nLie detector: armed. 👀");
+      typeLine("Final Lock 🔒\nSlide to 90%+ to unlock.\n\nLie detector: armed. 👀");
 
       const slider = $("yesSlider");
       const btn = $("btnUnlock");
@@ -817,8 +783,8 @@
       slider.oninput = ()=>{
         const v = Number(slider.value);
         if(v < 40) lieText.innerHTML = "Current reading: <b>denial</b>. (Cute.)";
-        else if(v < 70) lieText.innerHTML = "Current reading: <b>maybe</b>. We can work with this.";
-        else if(v < 90) lieText.innerHTML = "Current reading: <b>almost yes</b>. Slide a little more 😄";
+        else if(v < 70) lieText.innerHTML = "Current reading: <b>maybe</b>. Interesting.";
+        else if(v < 90) lieText.innerHTML = "Current reading: <b>almost yes</b>. Slide a bit more 😄";
         else lieText.innerHTML = "✅ Verified: <b>YES ENERGY DETECTED</b>.";
 
         if(v >= 90){
@@ -831,20 +797,20 @@
       };
 
       btn.onclick = ()=>{
-        addXP(90);
+        addXP(120);
         achievement("Lock Cracked 🔓", "Certificate unlocked.");
         heartsBurst(24);
         goToFinal();
       };
     }
 
-    // FINAL
+    // ----- FINAL -----
     function animateMeters(){
       const items = [
-        ["bYes","mYes", 95, 100, 160],
-        ["bLaugh","mLaugh", 88, 99, 360],
-        ["bDessert","mDessert", 97, 100, 560],
-        ["bCute","mCute", 92, 100, 760]
+        ["bYes","mYes", 95, 100, 140],
+        ["bLaugh","mLaugh", 88, 99, 340],
+        ["bDessert","mDessert", 97, 100, 540],
+        ["bCute","mCute", 92, 100, 740]
       ];
       items.forEach(([bar,label,min,max,delay])=>{
         setTimeout(()=>{
@@ -853,32 +819,29 @@
           requestAnimationFrame(()=> $(bar).style.width = v + "%");
         }, delay);
       });
-      setTimeout(()=>toast("✅ Match certified"), 940);
+      setTimeout(()=>toast("✅ Match certified"), 900);
     }
 
     function goToFinal(){
-      step = 4;
-      setHUD();
+      step = 5; setHUD();
       showPanel("pFinal");
       stopTimer();
       typeLine("Quest complete.\nAila, you passed with distinction.\n\nAbhiraj is requesting a date. 💖");
       animateMeters();
     }
 
-    // Copy message
+    // ----- Copy message -----
     async function copyMessage(){
+      const choice = $("dateChoice").textContent ? `\n\nChoice: ${$("dateChoice").textContent}` : "";
       const msg =
 `Aila 💖
 
-I made you a little Valentine Quest and you completed it.
+You completed Valentine Quest.
 So… will you be my Valentine?
 
 — Abhiraj
 
-Rewards unlocked:
-🍝 Dinner
-🍰 Dessert
-✨ Being ridiculously cute together
+Rewards: 🍝 dinner + 🍰 dessert + 📸 cute photos${choice}
 
 When are you free? 😄`;
       try{
@@ -896,91 +859,7 @@ When are you free? 😄`;
       }
     }
 
-    // Download certificate as PNG (screenshot)
-    async function downloadCertificate(){
-      const node = $("cert");
-      // Use SVG foreignObject trick (works well for simple DOM)
-      const rect = node.getBoundingClientRect();
-      const width = Math.ceil(rect.width);
-      const height = Math.ceil(rect.height);
-
-      const cloned = node.cloneNode(true);
-      cloned.style.margin = "0";
-      cloned.style.boxShadow = "none";
-
-      const wrapper = document.createElement("div");
-      wrapper.style.width = width + "px";
-      wrapper.style.height = height + "px";
-      wrapper.style.background = "#fff";
-      wrapper.style.padding = "12px";
-      wrapper.appendChild(cloned);
-
-      const svg =
-        `<svg xmlns="http://www.w3.org/2000/svg" width="${width+24}" height="${height+24}">
-          <foreignObject width="100%" height="100%">
-            <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;">
-              ${wrapper.innerHTML}
-            </div>
-          </foreignObject>
-        </svg>`;
-
-      const blob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = width+24;
-        canvas.height = height+24;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0);
-        URL.revokeObjectURL(url);
-
-        canvas.toBlob((png)=>{
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(png);
-          a.download = "Aila-Abhiraj-Valentine-Certificate.png";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(()=> URL.revokeObjectURL(a.href), 1000);
-          toast("Downloaded ✅");
-          achievement("Souvenir 📸", "Certificate saved as PNG.");
-        }, "image/png");
-      };
-      img.onerror = () => {
-        toast("Download not supported here 😅");
-      };
-      img.src = url;
-    }
-
-    // Preloader
-    (function runLoader(){
-      const overlay = $("overlay");
-      const loadFill = $("loadFill");
-      const loadText = $("loadText");
-      const steps = [
-        "Initializing butterflies…",
-        "Calibrating yes energy…",
-        "Warming up cheesy jokes…",
-        "Loading mini-games…",
-        "Ready ✅"
-      ];
-      let p = 0;
-      const t = setInterval(()=>{
-        loadText.textContent = steps[Math.min(p, steps.length-1)];
-        loadFill.style.width = (p*25) + "%";
-        p++;
-        if(p > 4){
-          clearInterval(t);
-          setTimeout(()=> overlay.classList.add("hide"), 350);
-        }
-      }, 420);
-    })();
-
-    // Buttons
+    // ----- Buttons -----
     $("btnStart").onclick = ()=>{
       goToQuiz();
       $("btnStart").textContent = "Quest Running ✅";
@@ -991,10 +870,11 @@ When are you free? 😄`;
     $("btnHint").onclick = ()=>{
       const hints = {
         0: "Hint: Press Start 😄",
-        1: "Hint: The correct option is the one with ‘Yes energy’.",
-        2: "Hint: Try remembering corners first.",
-        3: "Hint: 90%+. We’re watching 👀",
-        4: "Hint: Download the certificate & send it 😄"
+        1: "Hint: The correct option usually screams ‘Yes energy’.",
+        2: "Hint: Try remembering two cards at a time (shocking).",
+        3: "Hint: Tap faster. No mercy. 💘",
+        4: "Hint: 90%+. We’re watching 👀",
+        5: "Hint: Pick a date option and send the message 😄"
       };
       toast(hints[step] || "Hint: You’re doing great 😄");
       beep(523, 70, "triangle");
@@ -1008,7 +888,7 @@ When are you free? 😄`;
     };
 
     $("btnReset").onclick = ()=>{
-      step = 0; xp = 0; lvl = 1; streak = 0; bestStreak = 0;
+      step = 0; xp = 0; lvl = 1; streak = 0;
       setHUD();
       stopTimer();
       showPanel(null);
@@ -1017,6 +897,7 @@ When are you free? 😄`;
       typeLine("Reset complete.\nAila has been granted a fresh run. Use it wisely. 😄");
       toast("Reset ✅");
       achievement("Reset 🧼", "Clean slate. New run begins.");
+      $("dateChoice").textContent = "";
     };
 
     $("btnHearts").onclick = ()=>{
@@ -1027,9 +908,12 @@ When are you free? 😄`;
     };
 
     $("btnCopy").onclick = copyMessage;
-    $("btnDownload").onclick = downloadCertificate;
 
-    // Start text
+    $("btnCoffee").onclick = ()=>{ $("dateChoice").textContent = "Coffee date ☕"; toast("Coffee date selected ✅"); };
+    $("btnDinner").onclick = ()=>{ $("dateChoice").textContent = "Dinner date 🍝"; toast("Dinner date selected ✅"); };
+    $("btnDessert").onclick = ()=>{ $("dateChoice").textContent = "Dessert first 🍰"; toast("Dessert first selected ✅"); };
+
+    // ----- init -----
     setHUD();
     typeLine("Loading Valentine Quest…\nAila, your mission starts when you press Start. 💘");
   </script>
